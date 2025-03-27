@@ -27,7 +27,7 @@ typedef enum logic [2:0] {
 typedef enum logic [3:0] {
     IDLE, ACT, READ, WRITE, PRE, REFRESH, READ_TO_READ_DELAY, READ_TO_WRITE_DELAY,
     WRITE_TO_READ_DELAY, REFRESH_TO_READ_DELAY, REFRESH_TO_WRITE_DELAY,ACT_TO_RW_DELAY,
-    READ_TO_PRE_DELAY, WRITE_TO_PRE_DELAY
+    READ_TO_PRE_DELAY, WRITE_TO_PRE_DELAY,WAIT
 } state_t;
 
 state_t state, next_state;
@@ -216,7 +216,7 @@ always_comb begin
 
         ACT_TO_RW_DELAY: begin
             if (tCK_counter == 0) begin
-                next_state = (RDnWR) ? READ : WRITE; // Transition to READ/WRITE after delay
+                next_state = (RDnWR) ? READ : (Data_in_vld ? WRITE: WAIT); // Transition to READ/WRITE after delay
             end else begin
                 next_state = ACT_TO_RW_DELAY; // Wait until counter reaches 0
             end
@@ -241,6 +241,16 @@ always_comb begin
             end
         end
         
+        WAIT : begin
+            if(Data_in_vld)begin
+                next_state = WRITE;
+            end
+            
+            else begin
+                next_state = WAIT;
+            end
+        end
+
     endcase
 end
 
@@ -289,6 +299,6 @@ end
         return (active_row >= 4'h0 && active_row <= 4'hF);
     endfunction
 
-
-
 endmodule
+
+
