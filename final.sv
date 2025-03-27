@@ -27,7 +27,7 @@ typedef enum logic [2:0] {
 typedef enum logic [3:0] {
     IDLE, ACT, READ, WRITE, PRE, REFRESH, READ_TO_READ_DELAY, READ_TO_WRITE_DELAY,
     WRITE_TO_READ_DELAY, REFRESH_TO_READ_DELAY, REFRESH_TO_WRITE_DELAY,ACT_TO_RW_DELAY,
-    READ_TO_PRE_DELAY, WRITE_TO_PRE_DELAY,WAIT
+    READ_TO_PRE_DELAY, WRITE_TO_PRE_DELAY
 } state_t;
 
 state_t state, next_state;
@@ -53,7 +53,7 @@ logic [2:0]     command_buffer;
 logic [31:0]    Data_out_buffer;
 
 reg [31:0]      mem [0:65535];
-
+reg [31:0]      mem_buffer[0:65535];
 assign RA =     active_row;
 assign CA =     active_col;
 assign cs_n =   !(is_col_valid(active_col)&&is_row_valid(active_row));
@@ -71,15 +71,17 @@ always_ff @(posedge clk or negedge rst_n) begin
         read_delay_counter  <= 2'b0;
         data_out_vld        <= 1'b0;
         Data_out            <= 32'b0;
-    end 
+    end
+
     else begin
         state               <= next_state;
+        mem                 <= mem_buffer;
         active_row          <= next_active_row;
         active_col          <= next_active_col;
         row_active          <= next_row_active;
         read_data_buffer    <= next_read_data_buffer;
         read_delay_counter  <= next_read_delay_counter;
-	    Data_out            <= next_read_data_buffer;
+	    Data_out            <= mem[Addr_in];
         data_out_vld        <= 1'b1;
     end
 end
@@ -126,7 +128,7 @@ always_comb begin
 
         WRITE : begin
                 command_buffer      = CMD_WRITE;
-                mem[Addr_in]        <= Data_in;
+                mem_buffer[Addr_in] <= Data_in;
                 next_tCK_counter    = 4; 
                 next_state          = WRITE_TO_PRE_DELAY;
         end
@@ -134,7 +136,7 @@ always_comb begin
         READ : begin
             command_buffer          = CMD_READ;
             next_tCK_counter        = 2; // READ to READ delay
-            next_read_data_buffer   = mem[Addr_in];
+            next_read_data_buffer   = mem_buffer[Addr_in];
         
             if (is_col_valid(Addr_in[11:0])) begin
                 if (row_active && (active_row == Addr_in[15:12])) begin
@@ -152,8 +154,7 @@ always_comb begin
             end
         end
         
-        
-
+    
         PRE : begin
             command_buffer      = CMD_PRE;
             next_row_active     = 0;
@@ -216,7 +217,7 @@ always_comb begin
 
         ACT_TO_RW_DELAY: begin
             if (tCK_counter == 0) begin
-                next_state = (RDnWR) ? READ : (Data_in_vld ? WRITE: WAIT); // Transition to READ/WRITE after delay
+                next_state = (RDnWR) ? READ : WRITE; // Transition to READ/WRITE after delay
             end else begin
                 next_state = ACT_TO_RW_DELAY; // Wait until counter reaches 0
             end
@@ -241,16 +242,6 @@ always_comb begin
             end
         end
         
-        WAIT : begin
-            if(Data_in_vld)begin
-                next_state = WRITE;
-            end
-            
-            else begin
-                next_state = WAIT;
-            end
-        end
-
     endcase
 end
 
@@ -299,6 +290,6 @@ end
         return (active_row >= 4'h0 && active_row <= 4'hF);
     endfunction
 
+
+
 endmodule
-
-
