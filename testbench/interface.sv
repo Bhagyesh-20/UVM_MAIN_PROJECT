@@ -13,14 +13,13 @@ interface mem_ctrl_if();
     logic [3:0]  RA;           
     logic [11:0] CA;           
     logic        cs_n;  
-    logic        DQ;
+    wire        DQ;
 
     modport DUT (input clk, rst_n, cmd_n, RDnWR, Addr_in, Data_in_vld, Data_in,
                  output Data_out, data_out_vld, command, RA, CA, cs_n, 
                  inout DQ);
 
     modport TB (output cmd_n, RDnWR, Addr_in, Data_in_vld, Data_in,
-                input Data_out, data_out_vld, command, RA, CA, cs_n, 
-                inout DQ);
+                input Data_out, data_out_vld, command, RA, CA, cs_n);
 
 endinterface

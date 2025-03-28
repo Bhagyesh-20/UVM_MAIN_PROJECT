@@ -14,7 +14,6 @@ class monitor extends uvm_monitor;
 
     virtual function void build_phase(uvm_phase phase);
         super.build_phase(phase);
-        tc = transaction::type_id::create("tc",this);
         send = new("send",this);
         
         if(!uvm_config_db#( virtual mem_ctrl_if)::get(this,"","mcif",mcif))
@@ -24,14 +23,15 @@ class monitor extends uvm_monitor;
     virtual task run_phase(uvm_phase phase);
         forever begin
             @(posedge mcif.clk);
+            // tc = transaction::type_id::create("tc");
 
-            if(!mcif.rst)begin
+            if(!mcif.rst_n)begin
                 `uvm_info("MON", "SYSTEM RESET DETECTED", UVM_NONE);
-                send.write(tc);
+                
             end
 
-
             else begin
+                tc = transaction::type_id::create("tc");    
                 repeat(2) @(posedge mcif.clk);
                 tc.rst_n        = 1'b1;
                 tc.cmd_n        = mcif.cmd_n;
@@ -48,13 +48,24 @@ class monitor extends uvm_monitor;
 
                 if(mcif.command == 4'b0101)begin
                     `uvm_info("MON","REFRESH DETECTED",UVM_NONE);
-                    tc.is_refresh = 1;
+                    tc.ref_detected = 1;
+                    tc.pre_detected = 0;
+                    tc.act_detected = 0;
                 end
-                else begin
-                    tc.is_refresh = 0;
+                else if(mcif.command == 4'b0001)begin 
+                    `uvm_info("MON","ACT DETECTED",UVM_NONE);
+                    tc.act_detected = 1;
+                    tc.ref_detected = 0;
+                    tc.pre_detected = 0;
+                end
+                else if(mcif.command == 4'b0100)begin
+                    `uvm_info("MON","PRE DETECTED",UVM_NONE);
+                    tc.pre_detected = 1;
+                    tc.ref_detected = 0;
+                    tc.act_detected = 0;
                 end
 
-                `uvm_info("MON",$sformatf("DATA SENT TO ",tc.rst_n, tc.cmd_n, tc.RDnWR, tc.Addr_in, tc.Data_in_vld, tc.Data_in,),UVM_NONE)
+                `uvm_info("MON",$sformatf("DATA SENT",tc.rst_n, tc.cmd_n, tc.RDnWR, tc.Addr_in, tc.Data_in_vld, tc.Data_in,),UVM_NONE)
                 send.write(tc);  // have to insert clk based delays
                 
             end

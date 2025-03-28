@@ -9,15 +9,17 @@ class transaction extends uvm_sequence_item;
     rand bit [31:0]     Data_in;
 
     //outputs
-    bit [31:0]  Data_out;
-    bit         data_out_vld;
-    bit [2:0]   command;
-    bit [3:0]   RA;
-    bit [11:0]  CA;
-    bit         cs_n;
+    bit [31:0]          Data_out;
+    bit                 data_out_vld;
+    bit [2:0]           command;
+    bit [3:0]           RA;
+    bit [11:0]          CA;
+    bit                 cs_n;
 
     //variables
-    bit is_refresh;
+    bit                 ref_detected;
+    bit                 act_detected;
+    bit                 pre_detected;
 
     function new(input string path ="transaction");
         super.new(path);
@@ -36,6 +38,10 @@ class transaction extends uvm_sequence_item;
         uvm_field_int(RA,UVM_DEFAULT)
         uvm_field_int(CA,UVM_DEFAULT)
         uvm_field_int(cs_n,UVM_DEFAULT)
+        uvm_field_int(ref_detected,UVM_DEFAULT)
+        uvm_field_int(act_detected,UVM_DEFAULT)
+        uvm_field_int(pre_detected,UVM_DEFAULT)
+
     `uvm_object_utils_end
 
 endclass

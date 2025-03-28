@@ -20,7 +20,9 @@ module mem_ctrl_tb();
     );
 
     initial begin
-        mcif.clk = 0;
+            mcif.clk    = 0;
+            mcif.rst_n  = 0;
+        #20 mcif.rst_n  = 1;
     end
 
     initial begin
@@ -28,7 +30,7 @@ module mem_ctrl_tb();
         run_test("test");
     end
     
-    always #5 clk = ~clk;
+    always #5 mcif.clk = ~mcif.clk;
 
 
 
