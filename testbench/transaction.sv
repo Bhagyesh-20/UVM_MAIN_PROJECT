@@ -16,6 +16,9 @@ class transaction extends uvm_sequence_item;
     bit [11:0]  CA;
     bit         cs_n;
 
+    //variables
+    bit is_refresh;
+
     function new(input string path ="transaction");
         super.new(path);
     endfunction

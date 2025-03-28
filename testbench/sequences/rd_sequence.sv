@@ -12,9 +12,10 @@ class rd_sequence extends uvm_sequence #(transaction);
         repeat(5) begin
             start_item(tc);
                 tc.randomize();
+                tc.rst_n = 1'b1;    //  To make sure reset is not asserted while checking of cmd_n 
+                tc.cmd_n = 1'b0;    //  To make sure cmd_n is not 1 which would prevent from entering into read state
+                tc.RDnWR = 1'b1;    //  To check the state enters into the read mode  
                 `UVM_INFO("RD_SEQ",$sformatf("rst_n = %0b | cmd_n = %0b | RDnWR = %0b | Addr_in = %0h | Data_in_vld = %0b | Data_in = %0h", tc.rst_n, tc.cmd_n, tc.RDnWR, tc.Addr_in, tc.Data_in_vld, tc.Data_in),UVM_NONE)
-                tc.cmd_n = 0;
-                tc.RDnWR = 1; //Read mode  
             finish_item(tc);
             get_reponse(tc);
         end

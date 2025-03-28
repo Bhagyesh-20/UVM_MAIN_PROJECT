@@ -54,11 +54,12 @@ logic [31:0]    Data_out_buffer;
 
 reg [31:0]      mem [0:65535];
 reg [31:0]      mem_buffer[0:65535];
-assign RA =     active_row;
-assign CA =     active_col;
-assign cs_n =   !(is_col_valid(active_col)&&is_row_valid(active_row));
-assign DQ   =   (state == WRITE) ? Data_in : 32'bz; 
-assign command = command_buffer;
+// assign RA =     active_row;
+// assign CA =     active_col;
+assign cs_n     =   !(is_col_valid(active_col)&&is_row_valid(active_row));
+assign DQ       =   (state == WRITE) ? Data_in : 32'bz;
+assign DQ       =   (state == READ) ? mem[Addr_in] : 32'bz;
+assign command  = command_buffer;
 
 
 always_ff @(posedge clk or negedge rst_n) begin
@@ -81,7 +82,7 @@ always_ff @(posedge clk or negedge rst_n) begin
         row_active          <= next_row_active;
         read_data_buffer    <= next_read_data_buffer;
         read_delay_counter  <= next_read_delay_counter;
-	    Data_out            <= mem[Addr_in];
+	    Data_out            <= DQ;
         data_out_vld        <= 1'b1;
     end
 end
@@ -98,10 +99,12 @@ always_comb begin
 
     case(state)
         IDLE : begin
-            if(!cmd_n)
+            if(!cmd_n)begin
                 next_state = ACT;
-            else
+            end
+            else begin
                 next_state = PRE;
+            end
         end
 
         ACT : begin
@@ -119,7 +122,7 @@ always_comb begin
                 else begin
                     next_row_active     = 1;
                     next_state          = ACT_TO_RW_DELAY; // New delay state before READ/WRITE
-                    next_tCK_counter    = 5; // Set delay counter
+                    next_tCK_counter    = 5; //  delay counter
                 end
             end
         end
@@ -127,44 +130,60 @@ always_comb begin
         
 
         WRITE : begin
-                command_buffer      = CMD_WRITE;
-                mem_buffer[Addr_in] <= Data_in;
-                next_tCK_counter    = 4; 
-                next_state          = WRITE_TO_PRE_DELAY;
-        end
+                command_buffer          = CMD_WRITE;
+                if (Data_in_vld) begin
+                    mem_buffer[Addr_in] <= Data_in;
+                    next_tCK_counter     = 4;                   // delay counter
+                    next_state           = WRITE_TO_PRE_DELAY;
+                end 
+                
+                else begin
+                    next_state           = WRITE; 
+                end
+            end
 
         READ : begin
             command_buffer          = CMD_READ;
-            next_tCK_counter        = 2; // READ to READ delay
+            next_tCK_counter        = 2;                    // READ to READ delay
             next_read_data_buffer   = mem_buffer[Addr_in];
-        
+            {RA,CA}                 = Addr_in;
+            
             if (is_col_valid(Addr_in[11:0])) begin
                 if (row_active && (active_row == Addr_in[15:12])) begin
                     if (!cmd_n && !RDnWR) begin
                         next_state = READ_TO_WRITE_DELAY; 
                         next_tCK_counter = 4;
                     end 
+                    
                     else begin
                         next_state = READ_TO_READ_DELAY; 
                         next_tCK_counter = 2;
                     end
-                end else begin
+                end 
+                
+                else begin
                     next_state = READ_TO_PRE_DELAY;  
                 end
             end
         end
         
-    
+        
+
         PRE : begin
             command_buffer      = CMD_PRE;
             next_row_active     = 0;
-            next_tCK_counter    = 4; 
             
-                if (next_active_row != active_row) begin
-                    next_state = ACT;
-                end else begin
-                    next_state = IDLE;
-                end
+            if (next_active_row != active_row) begin
+                next_state = ACT;
+            end 
+                
+            else if(refresh_needed)begin
+                next_state = REFRESH;
+            end
+                
+            else begin
+                next_state = IDLE;
+            end
 
         end
         
@@ -172,7 +191,7 @@ always_comb begin
         REFRESH: begin
             command_buffer      = CMD_REFRESH;
             next_tCK_counter    = 5; 
-            next_state          = IDLE;
+            next_state          = ACT;
         end
 
         READ_TO_WRITE_DELAY: begin
@@ -185,7 +204,9 @@ always_comb begin
         READ_TO_READ_DELAY : begin
             if (tCK_counter == 0) begin
                 next_state = READ; 
-            end else begin
+            end 
+            
+            else begin
                 next_state = READ_TO_READ_DELAY;
             end
         end
@@ -193,7 +214,9 @@ always_comb begin
         WRITE_TO_READ_DELAY : begin
             if (tCK_counter == 0) begin
                 next_state = READ; 
-            end else begin
+            end 
+            
+            else begin
                 next_state = WRITE_TO_READ_DELAY;
             end
         end
@@ -201,7 +224,9 @@ always_comb begin
         REFRESH_TO_READ_DELAY : begin
             if (tCK_counter == 0) begin
                 next_state = READ; 
-            end else begin
+            end 
+            
+            else begin
                 next_state = REFRESH_TO_READ_DELAY;
             end
         end
@@ -209,7 +234,9 @@ always_comb begin
         REFRESH_TO_WRITE_DELAY : begin
             if (tCK_counter == 0) begin
                 next_state = WRITE; 
-            end else begin
+            end 
+            
+            else begin
                 next_state = REFRESH_TO_WRITE_DELAY;
             end
         end
@@ -218,8 +245,10 @@ always_comb begin
         ACT_TO_RW_DELAY: begin
             if (tCK_counter == 0) begin
                 next_state = (RDnWR) ? READ : WRITE; // Transition to READ/WRITE after delay
-            end else begin
-                next_state = ACT_TO_RW_DELAY; // Wait until counter reaches 0
+            end 
+            
+            else begin
+                next_state = ACT_TO_RW_DELAY;
             end
         end
 
@@ -228,6 +257,7 @@ always_comb begin
             if(tCK_counter == 0) begin
                 next_state = PRE;
             end
+            
             else begin
                 next_state = WRITE_TO_PRE_DELAY;
             end
@@ -237,6 +267,7 @@ always_comb begin
             if(tCK_counter == 0) begin
                 next_state = PRE;
             end
+            
             else begin
                 next_state = READ_TO_PRE_DELAY;
             end
@@ -245,26 +276,31 @@ always_comb begin
     endcase
 end
 
-    //For refresh
+    //For refresh counter
     always @(posedge clk or negedge rst_n) begin
+        
         if (!rst_n) begin
             refresh_counter <= 13'd0;
             refresh_needed  <= 1'b0;  
         end 
-        else if (refresh_counter == 13'd320) begin
+        
+        else if (refresh_counter >= 13'd320) begin
             refresh_needed  <= 1'b1;   
             refresh_counter <= 13'd0;
         end 
-         else if (state == REFRESH) begin
+        
+        else if (state == REFRESH) begin
              refresh_needed <= 1'b0;   
         end
+        
         else begin
             refresh_counter <= refresh_counter + 1;
         end
+    
     end
 
 
-    //For command Delays 
+    //For command Delays counter
     always @(posedge clk or negedge rst_n)begin
         
         if(!rst_n)begin
@@ -282,6 +318,7 @@ end
     end
 
 
+    //To check col and row validation
     function logic is_col_valid(input logic [11:0] active_col);
         return (active_col >= 12'h000 && active_col <= 12'hFFF);
     endfunction
