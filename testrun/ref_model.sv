@@ -73,6 +73,8 @@ class ref_model extends uvm_component;
     reg [31:0]      mem [0:65535];
     reg [31:0]      mem_buffer[0:65535];
 
+    
+
     task dut(
         input  logic        clk,
         input  logic        rst_n,
@@ -93,6 +95,7 @@ class ref_model extends uvm_component;
         fork
         if(mcif.rst_n == 1'b0)begin
             reset_dut();
+            data_out_vld = 1'b0;
         end
         
         else begin
@@ -128,14 +131,13 @@ class ref_model extends uvm_component;
         command_buffer      = CMD_NOP;
         tCK_counter         = 4'b0000;
         refresh_counter     = 13'b0000000000000;
-        refresh_needed      = 1'b0;
-        data_out_vld        = 1'b0;
         Data_out_buffer     = 32'b0;
         Data_in_buffer      = 32'b0;
     endtask
 
     
-    task fsm_logic();
+    task fsm_logic(input cmd_n,input RDnWR,input [15:0] Addr_in,input Data_in_vld,input [31:0] Data_in,output logic [31:0] Data_out,output logic data_out_vld,output logic [2:0] command,output logic [3:0] RA,output logic [11:0] CA,output logic cs_n);
+     
 	    next_state              = state;
         command_buffer          = CMD_NOP;
         next_active_row         = active_row;
@@ -425,6 +427,7 @@ class ref_model extends uvm_component;
     virtual task write_drv(transaction transaction_from_drv);
         `uvm_info("REF_MODEL",$sformatf("TRANSACTION received in reference_model from driver:"),UVM_MEDIUM)
         dut(mcif.clk,mcif.rst_n,transaction_from_drv.cmd_n,transaction_from_drv.RDnWR,transaction_from_drv.Addr_in,transaction_from_drv.Data_in_vld,transaction_from_drv.Data_in,transaction_from_drv.Data_out,transaction_from_drv.data_out_vld,transaction_from_drv.command,transaction_from_drv.RA,transaction_from_drv.CA,transaction_from_drv.cs_n);
+        
         ->done_drv_write;
     
     endtask
