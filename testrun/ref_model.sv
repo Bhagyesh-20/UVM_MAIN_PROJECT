@@ -47,7 +47,6 @@ class ref_model extends uvm_component;
     state_t state, next_state;
     logic [3:0]     tCK_counter;
     logic [12:0]    refresh_counter; 
-    logic           refresh_needed;
 
     logic [11:0]    active_col;
     logic [3:0]     active_row;
@@ -100,7 +99,7 @@ class ref_model extends uvm_component;
         
         else begin
             @(posedge mcif.clk)begin
-                fsm_logic();
+                fsm_logic(cmd_n,RDnWR,Addr_in,Data_in_vld,Data_in,Data_out, data_out_vld,command_buffer,RA,CA,cs_n);
                 tck_counter();
                 refresh_needed();
                 state               = next_state;
@@ -150,7 +149,7 @@ class ref_model extends uvm_component;
                 IDLE: begin
                     command_buffer  =   CMD_NOP;
                     data_out_vld    =   0;
-                    if(refresh_needed)begin
+                    if(refresh_needed())begin
                         next_state  = REFRESH;
                     end
                     else if(!cmd_n)begin
@@ -168,7 +167,7 @@ class ref_model extends uvm_component;
                     data_out_vld    = 0;
 
                     if(is_row_valid(next_active_row))begin
-                        if(refresh_needed)begin
+                        if(refresh_needed())begin
                             next_state = REFRESH;
                         end
                         else if(row_active && active_row!=next_active_row)begin
@@ -194,7 +193,7 @@ class ref_model extends uvm_component;
                     command_buffer   = CMD_WRITE;
                     data_out_vld     = 0;
                     
-                    if (refresh_needed) begin
+                    if (refresh_needed()) begin
                         next_state = REFRESH;
                     end
                     else if (Data_in_vld) begin
@@ -233,7 +232,7 @@ class ref_model extends uvm_component;
                         command_buffer          = CMD_READ;
                         next_tCK_counter        = 2;
 
-                    if(refresh_needed)begin
+                    if(refresh_needed())begin
                         next_state = REFRESH;
                     end
                     else if(is_col_valid(Addr_in[11:0]))begin
@@ -267,7 +266,7 @@ class ref_model extends uvm_component;
                     next_row_active     = 0;
                     
                     if(is_row_valid(next_active_row))begin
-                        if(refresh_needed)begin
+                        if(refresh_needed())begin
                             next_state = REFRESH;
                         end
 
@@ -391,7 +390,7 @@ class ref_model extends uvm_component;
     endtask
 
 	function refresh_needed();
-        @(posedge mcif.clk)begin
+       
             if(refresh_counter == 13'd320)begin
             return 1;
             end
@@ -399,7 +398,7 @@ class ref_model extends uvm_component;
                 refresh_counter ++;
                 return 0;
             end
-        end
+        
 	endfunction
 	
     task tck_counter();
