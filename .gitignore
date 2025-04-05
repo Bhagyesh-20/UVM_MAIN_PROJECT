@@ -1,3 +1,5 @@
-
+work/
 qrun.out/
 qrun.log
+transcript
+vsim_stacktrace.vstf

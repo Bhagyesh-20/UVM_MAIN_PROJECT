@@ -1,9 +1,11 @@
-`include "interface.sv"
-package pkg;
+package mem_ctrl_pkg;
     import uvm_pkg::*;
-    `include "uvm_macros.svh"
     
+    bit [15:0] addr_in_queue[$];   
+
+    `include "uvm_macros.svh"
     `include "transaction.sv"
+    `include "cmd_n_sequence.sv"
     `include "rd_sequence.sv"
     `include "rst_sequence.sv"
     `include "wr_invld_sequence.sv"
@@ -11,8 +13,10 @@ package pkg;
     `include "wr_sequence.sv"
     `include "driver.sv"
     `include "monitor.sv"
-    `include "scoreboard.sv"
     `include "agent.sv"
+    `include "scoreboard.sv"
+  //  `include "ref_model.sv"
     `include "env.sv"
     `include "test.sv"
+
 endpackage

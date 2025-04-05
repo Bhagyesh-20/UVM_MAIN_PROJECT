@@ -1,6 +1,16 @@
-module mem_ctrl_tb();
-    
-    mem_ctrl_if mcif(clk, rst_n);
+
+`include "uvm_macros.svh"
+import uvm_pkg::*;
+`include "mem_ctrl_pkg.sv"
+
+import mem_ctrl_pkg::*;
+`include "dut_1.1.sv"
+`include "interface.sv"
+
+
+
+module tb_top();
+    mem_ctrl_if mcif();
     
     mem_ctrl dut (
         .clk          (mcif.clk),
@@ -22,16 +32,15 @@ module mem_ctrl_tb();
     initial begin
             mcif.clk    = 0;
             mcif.rst_n  = 0;
-        #20 mcif.rst_n  = 1;
-    end
-
-    initial begin
-        uvm_config_db#(virtual mem_ctrl_if)::set(null,"uvm_test_top.e.a*","mcif",mcif);
-        run_test("test");
+        #0  mcif.clk    = 1;
+        #0  mcif.rst_n  = 1;
     end
     
     always #5 mcif.clk = ~mcif.clk;
-
-
-
+    
+    initial begin
+        uvm_config_db#(virtual mem_ctrl_if)::set(null,"uvm_test_top.e*","mcif",mcif);
+        run_test("test");
+    end
+    
 endmodule
