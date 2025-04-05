@@ -3,8 +3,6 @@
 
 class ref_model extends uvm_component;
     `uvm_component_utils(ref_model)
-    uvm_analysis_port #(transaction) send;
-
     transaction transaction_from_drv;
 
     uvm_event       read_done;
@@ -12,14 +10,16 @@ class ref_model extends uvm_component;
 
     virtual mem_ctrl_if mcif;
 
-    uvm_analysis_imp_drv #(transaction,ref_model) recv_to_ref_drv;
-   
+    uvm_analysis_imp_drv #(transaction,ref_model) rcv_drv;
+    //uvm_analysis_imp_mon #(transaction,ref_model) rcv_mon;
+
     
     function new(string name = "ref_model", uvm_component parent = null);
         super.new(name, parent);
         read_done = new();
         write_done = new();
-        recv_to_ref_drv = new("recv_to_ref_drv", this);
+        rcv_drv = new("rcv_drv", this);
+       // rcv_mon = new("rcv_mon", this);
     endfunction
 
     virtual function void build_phase(uvm_phase phase);
@@ -28,25 +28,50 @@ class ref_model extends uvm_component;
             `uvm_error("REF_MODEL", "Failed to get virtual interface")
     endfunction
 
-    virtual task main_phase(uvm_phase phase);
-        `uvm_info("REF_MODEL", "Inside main_phase, waiting for events...", UVM_NONE)
-        fork : fork_1
-            begin
-                write_done.wait_trigger();
-                `uvm_info("REF_MODEL", "Write done event received from Driver", UVM_NONE)
+  
+    typedef enum logic [2:0] {
+        CMD_NOP      = 3'b000,
+        CMD_ACT      = 3'b001, 
+        CMD_READ     = 3'b010, 
+        CMD_WRITE    = 3'b011, 
+        CMD_PRE      = 3'b100,
+        CMD_REFRESH  = 3'b101  
+    } cmd_t;
 
-                disable fork_1;
-            end
-            begin
-                read_done.wait_trigger();
-                `uvm_info("REF_MODEL", "Read done event received from Driver", UVM_NONE)
+    typedef enum logic [3:0] {
+        IDLE, ACT, READ, WRITE, PRE, REFRESH, READ_TO_READ_DELAY, READ_TO_WRITE_DELAY,
+        WRITE_TO_READ_DELAY, REFRESH_TO_READ_DELAY, REFRESH_TO_WRITE_DELAY,ACT_TO_RW_DELAY,
+        READ_TO_PRE_DELAY, WRITE_TO_PRE_DELAY
+    } state_t;
 
-                disable fork_1;
-            end
-        join: fork_1
-        `uvm_info("REF_MODEL", "Done event received from Driver", UVM_NONE)
-        // send.write(transaction_from_drv);
-    endtask
+    state_t state, next_state;
+    logic [3:0]     tCK_counter;
+    logic [12:0]    refresh_counter; 
+    logic           refresh_needed;
+
+    logic [11:0]    active_col;
+    logic [3:0]     active_row;
+
+    logic [11:0]    prev_col;
+    logic [3:0]     prev_row;
+    logic [31:0]    prev_data_in;
+
+    logic           row_active;
+
+    logic [3:0]     next_active_row;
+    logic [11:0]    next_active_col;
+
+    logic           next_row_active;
+    logic [3:0]     next_tCK_counter;
+
+
+    logic [2:0]     command_buffer;
+
+    reg [31:0]	Data_out_buffer;
+    reg [31:0]	Data_in_buffer;
+
+    reg [31:0]      mem [0:65535];
+    reg [31:0]      mem_buffer[0:65535];
 
     task dut(
         input  logic        clk,
@@ -64,51 +89,8 @@ class ref_model extends uvm_component;
         output  logic        cs_n
         );
 
-        typedef enum logic [2:0] {
-            CMD_NOP      = 3'b000,
-            CMD_ACT      = 3'b001, 
-            CMD_READ     = 3'b010, 
-            CMD_WRITE    = 3'b011, 
-            CMD_PRE      = 3'b100,
-            CMD_REFRESH  = 3'b101  
-        } cmd_t;
 
-        typedef enum logic [3:0] {
-            IDLE, ACT, READ, WRITE, PRE, REFRESH, READ_TO_READ_DELAY, READ_TO_WRITE_DELAY,
-            WRITE_TO_READ_DELAY, REFRESH_TO_READ_DELAY, REFRESH_TO_WRITE_DELAY,ACT_TO_RW_DELAY,
-            READ_TO_PRE_DELAY, WRITE_TO_PRE_DELAY
-        } state_t;
-    
-        state_t state, next_state;
-        logic [3:0]     tCK_counter;
-        logic [12:0]    refresh_counter; 
-        logic           refresh_needed;
-    
-        logic [11:0]    active_col;
-        logic [3:0]     active_row;
-    
-        logic [11:0]    prev_col;
-        logic [3:0]     prev_row;
-        logic [31:0]    prev_data_in;
-    
-        logic           row_active;
-    
-        logic [3:0]     next_active_row;
-        logic [11:0]    next_active_col;
-    
-        logic           next_row_active;
-        logic [3:0]     next_tCK_counter;
-    
-    
-        logic [2:0]     command_buffer;
-	
-	    reg [31:0]	Data_out_buffer;
-	    reg [31:0]	Data_in_buffer;
-
-        reg [31:0]      mem [0:65535];
-        reg [31:0]      mem_buffer[0:65535];
-
-        
+        fork
         if(mcif.rst_n == 1'b0)begin
             reset_dut();
         end
@@ -135,6 +117,7 @@ class ref_model extends uvm_component;
                 end
             end
         end
+    join
     endtask
 
     task reset_dut();
@@ -214,6 +197,7 @@ class ref_model extends uvm_component;
                     end
                     else if (Data_in_vld) begin
                         mem_buffer[Addr_in] = Data_in_buffer;
+                        write_done.trigger();
                         if (!cmd_n) begin
                             if (RDnWR) begin  
                                 if (active_row == next_active_row) begin
@@ -404,7 +388,7 @@ class ref_model extends uvm_component;
             endcase
     endtask
 
-	task refresh_needed();
+	function refresh_needed();
         @(posedge mcif.clk)begin
             if(refresh_counter == 13'd320)begin
             return 1;
@@ -414,7 +398,7 @@ class ref_model extends uvm_component;
                 return 0;
             end
         end
-	endtask
+	endfunction
 	
     task tck_counter();
         @(posedge mcif.clk)begin
@@ -435,11 +419,47 @@ class ref_model extends uvm_component;
         return (active_row >= 4'h0 && active_row <= 4'hF);
     endfunction
 
+    event done_drv_write;
+    event done_mon_write;
+
     virtual task write_drv(transaction transaction_from_drv);
         `uvm_info("REF_MODEL",$sformatf("TRANSACTION received in reference_model from driver:"),UVM_MEDIUM)
-        fork
         dut(mcif.clk,mcif.rst_n,transaction_from_drv.cmd_n,transaction_from_drv.RDnWR,transaction_from_drv.Addr_in,transaction_from_drv.Data_in_vld,transaction_from_drv.Data_in,transaction_from_drv.Data_out,transaction_from_drv.data_out_vld,transaction_from_drv.command,transaction_from_drv.RA,transaction_from_drv.CA,transaction_from_drv.cs_n);
-        join_none
+        ->done_drv_write;
+    
+    endtask
+
+    // virtual task write_mon(transaction transaction_from_mon);
+    //     `uvm_info("REF_MODEL",$sformatf("TRANSACTION received in reference_model from monitor:"),UVM_MEDIUM)
+    //     dut(mcif.clk,mcif.rst_n,transaction_from_mon.cmd_n,transaction_from_mon.RDnWR,transaction_from_mon.Addr_in,transaction_from_mon.Data_in_vld,transaction_from_mon.Data_in,transaction_from_mon.Data_out,transaction_from_mon.data_out_vld,transaction_from_mon.command,transaction_from_mon.RA,transaction_from_mon.CA,transaction_from_mon.cs_n);
+    //     ->done_mon_write;
+    // endtask
+
+
+
+    virtual task main_phase(uvm_phase phase);
+        @(done_drv_write);
+       // @(done_mon_write);
+        `uvm_info("REF_MODEL", "Inside main_phase, waiting for events...", UVM_NONE)
+        forever begin
+        fork : fork_1
+            begin
+                write_done.wait_trigger();
+                `uvm_info("REF_MODEL", "Write done event received from Driver", UVM_NONE)
+
+               
+            end
+            begin
+                read_done.wait_trigger();
+                `uvm_info("REF_MODEL", "Read done event received from Driver", UVM_NONE)
+
+                
+            end
+        join_any: fork_1
+        disable fork_1;
+        `uvm_info("REF_MODEL", "Done event received from Driver", UVM_NONE)
+        // send.write(transaction_from_drv);
+        end
     endtask
 
 endclass
