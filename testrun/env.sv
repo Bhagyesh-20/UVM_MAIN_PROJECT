@@ -20,7 +20,7 @@ class env extends uvm_env;
     virtual function void connect_phase(uvm_phase phase);
         super.connect_phase(phase);
         
-        a.d.send_to_ref_drv.connect(rf_mdl.recv_to_ref_drv);  
+        a.d.send_to_ref_drv.connect(rf_mdl.rcv_drv);  
         a.m.send.connect(s.recv);
     endfunction
 

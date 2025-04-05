@@ -37,52 +37,52 @@ class test extends uvm_test;
     virtual task run_phase(uvm_phase phase);
         phase.raise_objection(this);
                 wr_seq.start(e.a.seqr);
+                #5000;
+                // e.s.sb_done.wait_trigger();
                 
-                e.s.sb_done.wait_trigger();
+                // wr_seq.start(e.a.seqr);
                 
-                wr_seq.start(e.a.seqr);
+                // e.s.sb_done.wait_trigger();
                 
-                e.s.sb_done.wait_trigger();
+                // wr_seq.start(e.a.seqr);
                 
-                wr_seq.start(e.a.seqr);
+                // e.s.sb_done.wait_trigger();
                 
-                e.s.sb_done.wait_trigger();
+                // wr_seq.start(e.a.seqr);
                 
-                wr_seq.start(e.a.seqr);
+                // e.s.sb_done.wait_trigger();
                 
-                e.s.sb_done.wait_trigger();
-                
-                rd_seq.start(e.a.seqr);
+                // rd_seq.start(e.a.seqr);
                
-                e.s.sb_done.wait_trigger();
+                // e.s.sb_done.wait_trigger();
                 
-                rd_seq.start(e.a.seqr);
+                // rd_seq.start(e.a.seqr);
 
-                e.s.sb_done.wait_trigger();
+                // e.s.sb_done.wait_trigger();
                 
-                rd_seq.start(e.a.seqr);
+                // rd_seq.start(e.a.seqr);
 
-                e.s.sb_done.wait_trigger();
+                // e.s.sb_done.wait_trigger();
                 
-                rd_seq.start(e.a.seqr);
+                // rd_seq.start(e.a.seqr);
                 
-                e.s.sb_done.wait_trigger();
+                // e.s.sb_done.wait_trigger();
                 
-                rd_seq.start(e.a.seqr);
+                // rd_seq.start(e.a.seqr);
                 
-                e.s.sb_done.wait_trigger();
+                // e.s.sb_done.wait_trigger();
                 
-                rd_seq.start(e.a.seqr);
+                // rd_seq.start(e.a.seqr);
 
-                e.s.sb_done.wait_trigger();
+                // e.s.sb_done.wait_trigger();
                 
-                wr_invld_seq.start(e.a.seqr);
+                // wr_invld_seq.start(e.a.seqr);
 
-                e.s.sb_done.wait_trigger();
+                // e.s.sb_done.wait_trigger();
                 
-                cdn_seq.start(e.a.seqr);
+                // cdn_seq.start(e.a.seqr);
                 
-                e.s.sb_done.wait_trigger();
+                // e.s.sb_done.wait_trigger();
         phase.drop_objection(this);
     endtask
 

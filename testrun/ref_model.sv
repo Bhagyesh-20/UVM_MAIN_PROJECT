@@ -1,467 +1,257 @@
 `uvm_analysis_imp_decl(_drv)
-`uvm_analysis_imp_decl(_mon)
 
 class ref_model extends uvm_component;
-    `uvm_component_utils(ref_model)
-    transaction transaction_from_drv;
+  `uvm_component_utils(ref_model)
 
-    uvm_event       read_done;
-    uvm_event       write_done;
+  transaction transaction_from_drv;
+  uvm_analysis_imp_drv #(transaction, ref_model) rcv_drv;
+  uvm_analysis_port #(transaction) predicted_output_ap;
 
-    virtual mem_ctrl_if mcif;
+  virtual mem_ctrl_if mcif;
 
-    uvm_analysis_imp_drv #(transaction,ref_model) rcv_drv;
-    //uvm_analysis_imp_mon #(transaction,ref_model) rcv_mon;
+  typedef enum logic [2:0] {
+    CMD_NOP     = 3'b000,
+    CMD_ACT     = 3'b001,
+    CMD_READ    = 3'b010,
+    CMD_WRITE   = 3'b011,
+    CMD_PRE     = 3'b100,
+    CMD_REFRESH = 3'b101
+  } cmd_t;
 
-    
-    function new(string name = "ref_model", uvm_component parent = null);
-        super.new(name, parent);
-        read_done = new();
-        write_done = new();
-        rcv_drv = new("rcv_drv", this);
-       // rcv_mon = new("rcv_mon", this);
-    endfunction
+  typedef enum logic [3:0] {
+    IDLE, ACT, READ, WRITE, PRE, REFRESH, READ_TO_READ_DELAY, READ_TO_WRITE_DELAY,
+    WRITE_TO_READ_DELAY, REFRESH_TO_READ_DELAY, REFRESH_TO_WRITE_DELAY, ACT_TO_RW_DELAY,
+    READ_TO_PRE_DELAY, WRITE_TO_PRE_DELAY
+  } state_t;
 
-    virtual function void build_phase(uvm_phase phase);
-        super.build_phase(phase);
-        if (!uvm_config_db#(virtual mem_ctrl_if)::get(this, "", "mcif", mcif))
-            `uvm_error("REF_MODEL", "Failed to get virtual interface")
-    endfunction
+  state_t current_state, next_state;
+  logic [3:0] tCK_counter;
+  logic [12:0] refresh_counter;
+  logic refresh_needed;
 
-  
-    typedef enum logic [2:0] {
-        CMD_NOP      = 3'b000,
-        CMD_ACT      = 3'b001, 
-        CMD_READ     = 3'b010, 
-        CMD_WRITE    = 3'b011, 
-        CMD_PRE      = 3'b100,
-        CMD_REFRESH  = 3'b101  
-    } cmd_t;
+  logic [11:0] active_col;
+  logic [3:0] active_row;
+  logic row_active;
 
-    typedef enum logic [3:0] {
-        IDLE, ACT, READ, WRITE, PRE, REFRESH, READ_TO_READ_DELAY, READ_TO_WRITE_DELAY,
-        WRITE_TO_READ_DELAY, REFRESH_TO_READ_DELAY, REFRESH_TO_WRITE_DELAY,ACT_TO_RW_DELAY,
-        READ_TO_PRE_DELAY, WRITE_TO_PRE_DELAY
-    } state_t;
+  reg [31:0] mem [0:65535];
 
-    state_t state, next_state;
-    logic [3:0]     tCK_counter;
-    logic [12:0]    refresh_counter; 
+  event done_processing;
 
-    logic [11:0]    active_col;
-    logic [3:0]     active_row;
+  function new(string name = "ref_model", uvm_component parent = null);
+    super.new(name, parent);
+    rcv_drv = new("rcv_drv", this);
+    predicted_output_ap = new("predicted_output_ap", this);
+    done_processing = new();
+  endfunction
 
-    logic [11:0]    prev_col;
-    logic [3:0]     prev_row;
-    logic [31:0]    prev_data_in;
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    transaction_from_drv = transaction::type_id::create("transaction_from_drv", this);
+    if (!uvm_config_db#(virtual mem_ctrl_if)::get(this, "", "mcif", mcif))
+      `uvm_error("REF_MODEL", "Failed to get virtual interface")
+  endfunction
 
-    logic           row_active;
+  virtual task write_drv(transaction t);
+    transaction_from_drv = t;
+    `uvm_info("REF_MODEL", $sformatf("Received transaction: %s", t.sprint()), UVM_MEDIUM)
+    fork
+      process_transaction(transaction_from_drv);
+    join_none
+  endtask
 
-    logic [3:0]     next_active_row;
-    logic [11:0]    next_active_col;
+  task process_transaction(transaction t);
+    state_t next_s;
+    logic [3:0] next_tCK;
+    logic [3:0] current_tCK;
+    state_t current_s;
+    logic [3:0] next_ar;
+    logic [11:0] next_ac;
+    logic next_ra;
 
-    logic           next_row_active;
-    logic [3:0]     next_tCK_counter;
+    current_s = current_state;
+    current_tCK = tCK_counter;
+    next_s = current_s;
+    next_tCK = current_tCK;
+    next_ar = active_row;
+    next_ac = active_col;
+    next_ra = row_active;
 
-
-    logic [2:0]     command_buffer;
-
-    reg [31:0]	Data_out_buffer;
-    reg [31:0]	Data_in_buffer;
-
-    reg [31:0]      mem [0:65535];
-    reg [31:0]      mem_buffer[0:65535];
-
-    
-
-    task dut(
-        input  logic        clk,
-        input  logic        rst_n,
-        input  logic        cmd_n,
-        input  logic        RDnWR,      
-        input  logic [15:0] Addr_in,      
-        input  logic        Data_in_vld,  
-        input  logic [31:0] Data_in,    
-        output logic [31:0] Data_out,     
-        output logic        data_out_vld, 
-        output  logic [2:0]  command,     
-        output  logic [3:0]  RA,           
-        output  logic [11:0] CA,           
-        output  logic        cs_n
-        );
-
-
-        fork
-        if(mcif.rst_n == 1'b0)begin
-            reset_dut();
-            data_out_vld = 1'b0;
+    case (current_s)
+      IDLE: begin
+        if (refresh_needed) begin
+          next_s = REFRESH;
+          next_tCK = 5;
+        end else if (!t.cmd_n) begin
+          next_s = ACT;
+          next_ar = t.Addr_in[15:12];
+          next_ac = t.Addr_in[11:0];
         end
-        
-        else begin
-            @(posedge mcif.clk)begin
-                fsm_logic(cmd_n,RDnWR,Addr_in,Data_in_vld,Data_in,Data_out, data_out_vld,command_buffer,RA,CA,cs_n);
-                tck_counter();
-                refresh_needed();
-                state               = next_state;
-                active_row          = next_active_row;
-                active_col          = next_active_col;
-                row_active          = next_row_active;
-                
-                if(data_out_vld)begin
-                    Data_out        = Data_out_buffer; //when read to read delay is there data_out_buffer will store the data like D'Q
-                    read_done.trigger();
-                end
-
-                if (state == WRITE && Data_in_vld) begin
-                    prev_row        = active_row;
-                    prev_col        = active_col;
-                    prev_data_in    = Data_in; 
-                end
+      end
+      ACT: begin
+        if (is_row_valid(t.Addr_in[15:12])) begin
+          if (refresh_needed) begin
+            next_s = REFRESH;
+            next_tCK = 5;
+          end else if (row_active && active_row != t.Addr_in[15:12]) begin
+            next_s = PRE;
+          end else begin
+            next_ra = 1;
+            if (is_col_valid(t.Addr_in[11:0])) begin
+              next_s = ACT_TO_RW_DELAY;
+              next_tCK = 5;
+              next_ar = t.Addr_in[15:12];
+              next_ac = t.Addr_in[11:0];
             end
+          end
+        end else begin
+          next_s = IDLE;
         end
-    join
-    endtask
-
-    task reset_dut();
-        state               = IDLE;
-        active_row          = 4'b0000;
-        active_col          = 12'b000000000000;
-        row_active          = 1'b0;
-        command_buffer      = CMD_NOP;
-        tCK_counter         = 4'b0000;
-        refresh_counter     = 13'b0000000000000;
-        Data_out_buffer     = 32'b0;
-        Data_in_buffer      = 32'b0;
-    endtask
-
-    
-    task fsm_logic(input cmd_n,input RDnWR,input [15:0] Addr_in,input Data_in_vld,input [31:0] Data_in,output logic [31:0] Data_out,output logic data_out_vld,output logic [2:0] command,output logic [3:0] RA,output logic [11:0] CA,output logic cs_n);
-     
-	    next_state              = state;
-        command_buffer          = CMD_NOP;
-        next_active_row         = active_row;
-        next_active_col         = active_col;
-        next_row_active         = row_active;
-        next_tCK_counter        = tCK_counter;
-        mem                     = mem_buffer;
-
-	 case(state)
-                IDLE: begin
-                    command_buffer  =   CMD_NOP;
-                    data_out_vld    =   0;
-                    if(refresh_needed())begin
-                        next_state  = REFRESH;
-                    end
-                    else if(!cmd_n)begin
-                        next_state  = ACT;
-                    end
-                    else begin
-                        next_state  = IDLE;
-                    end
-                end
-
-                ACT : begin
-                    command_buffer  = CMD_ACT;
-                    next_active_row = Addr_in[15:12];
-                    next_active_col = Addr_in[11:0];
-                    data_out_vld    = 0;
-
-                    if(is_row_valid(next_active_row))begin
-                        if(refresh_needed())begin
-                            next_state = REFRESH;
-                        end
-                        else if(row_active && active_row!=next_active_row)begin
-                            next_state = PRE;
-                        end
-                        else begin
-                            next_row_active = 1;
-                            if(is_col_valid(next_active_col))begin
-                                next_state = ACT_TO_RW_DELAY;
-                                next_tCK_counter = 5;
-                            end
-                            else begin
-                                next_state = ACT;
-                            end
-                        end
-                    end
-                    else begin
-                        next_state = IDLE;
-                    end
-                end
-
-                WRITE : begin
-                    command_buffer   = CMD_WRITE;
-                    data_out_vld     = 0;
-                    
-                    if (refresh_needed()) begin
-                        next_state = REFRESH;
-                    end
-                    else if (Data_in_vld) begin
-                        mem_buffer[Addr_in] = Data_in_buffer;
-                        write_done.trigger();
-                        if (!cmd_n) begin
-                            if (RDnWR) begin  
-                                if (active_row == next_active_row) begin
-                                    next_tCK_counter = 4;
-                                    next_state       = WRITE_TO_READ_DELAY;
-                                end
-                                else begin
-                                    next_tCK_counter = 4;
-                                    next_state       = WRITE_TO_PRE_DELAY;
-                                end
-                            end
-                            else begin
-                                if(prev_col!= next_active_row && prev_row!=next_active_row && prev_data_in!= Data_in)begin
-                                    next_state = WRITE; 
-                                end
-                                else begin
-                                    next_state = ACT;
-                                end
-                            end
-                        end
-                        else begin
-                            next_state = IDLE;
-                        end
-                    end
-                    else begin
-                        next_state = ACT;
-                    end
-                end
-                
-                READ : begin
-                        command_buffer          = CMD_READ;
-                        next_tCK_counter        = 2;
-
-                    if(refresh_needed())begin
-                        next_state = REFRESH;
-                    end
-                    else if(is_col_valid(Addr_in[11:0]))begin
-                        
-                        if (row_active && (active_row == Addr_in[15:12])) begin
-                            if (!cmd_n && !RDnWR) begin
-                                next_state = READ_TO_WRITE_DELAY; 
-                                next_tCK_counter = 4;
-                            end 
-                            else if (!cmd_n && RDnWR) begin 
-                                next_state = READ_TO_READ_DELAY;
-                                next_tCK_counter = 2;
-                            end
-                            else begin
-                                next_state = IDLE;  
-                            end
-                        end 
-                        else begin
-                            next_state = READ_TO_PRE_DELAY;  
-                            next_tCK_counter = 4;
-                        end
-                    end
-                    else begin
-                        next_state = ACT;
-                    end
-                end
-
-                PRE : begin
-                    data_out_vld        = 0;
-                    command_buffer      = CMD_PRE;
-                    next_row_active     = 0;
-                    
-                    if(is_row_valid(next_active_row))begin
-                        if(refresh_needed())begin
-                            next_state = REFRESH;
-                        end
-
-                        else if (next_active_row != active_row) begin    
-                            next_state = ACT;
-                        end 
-                        else begin
-                            next_state = IDLE;
-                        end
-                    end
-                    else begin
-                        next_state = IDLE;
-                    end
-                end
-
-                REFRESH : begin
-                    data_out_vld            = 0;
-                    if(is_row_valid(next_active_row))begin
-                        command_buffer      = CMD_REFRESH;
-                         for(int i= 0;i<4096;i++)begin
-                             mem[{active_row, i[11:0]}] = mem_buffer[{active_row, i[11:0]}];
-                         end
-                        next_tCK_counter    = 5; 
-                        next_state          = IDLE;
-                      
-                    end
-
-                    else begin
-                        next_state = REFRESH;
-                    end        
-                end
-                
-                READ_TO_WRITE_DELAY : begin
-                    data_out_vld    = 0;
-                    if(tCK_counter == 0)begin
-                        next_state          = WRITE;
-                        next_tCK_counter    = 4;
-                    end
-                    else begin
-                        next_state = READ_TO_WRITE_DELAY;
-                    end
-                end
-        
-                READ_TO_READ_DELAY : begin
-
-                    if (tCK_counter == 0) begin
-                        {RA,CA}      = Addr_in;
-                        data_out_vld = 1'b1;
-                        next_state   = READ; 
-                    
-                    end
-                    
-                    else if(tCK_counter == 1)begin
-                        data_out_vld = 1'b0;
-                    end 
-
-                    else begin
-                        next_state = READ_TO_READ_DELAY;
-                    end
-                end
-                
-                WRITE_TO_READ_DELAY : begin
-                    data_out_vld    = 0;
-                    if (tCK_counter == 0) begin
-                        next_state = READ; 
-                    end 
-                    else begin
-                        next_state = WRITE_TO_READ_DELAY;
-                    end
-                end
-        
-                REFRESH_TO_READ_DELAY : begin
-                    data_out_vld =   0;
-                    if (tCK_counter == 0) begin
-                        next_state = READ; 
-                    end else begin
-                        next_state = REFRESH_TO_READ_DELAY;
-                    end
-                end
-        
-                REFRESH_TO_WRITE_DELAY : begin
-                    data_out_vld    = 0;
-                    if (tCK_counter == 0) begin
-                        next_state = WRITE; 
-                    end else begin
-                        next_state = REFRESH_TO_WRITE_DELAY;
-                    end
-                end
-        
-        
-                ACT_TO_RW_DELAY : begin
-                    data_out_vld    = 0;
-                    if (tCK_counter == 0) begin
-                        next_state = (RDnWR) ? READ : WRITE; // Transition to READ/WRITE after delay
-                    end else begin
-                        next_state = ACT_TO_RW_DELAY; 
-                    end
-                end
-        
-        
-                WRITE_TO_PRE_DELAY : begin
-                    data_out_vld    =   0;
-                    if(tCK_counter == 0) begin
-                        next_state = PRE;
-                    end
-                    else begin
-                        next_state = WRITE_TO_PRE_DELAY;
-                    end
-                end
-        
-                READ_TO_PRE_DELAY : begin
-                    data_out_vld    =   0;
-                    if(tCK_counter == 0) begin
-                        next_state = PRE;
-                    end
-                    else begin
-                        next_state = READ_TO_PRE_DELAY;
-                    end
-                end            
-            endcase
-    endtask
-
-	function refresh_needed();
-       
-            if(refresh_counter == 13'd320)begin
-            return 1;
-            end
-            else begin
-                refresh_counter ++;
-                return 0;
-            end
-        
-	endfunction
-	
-    task tck_counter();
-        @(posedge mcif.clk)begin
-            if(tCK_counter == 0)begin
-                tCK_counter = 4'b0000;
-            end
-            else begin
-                tCK_counter = tCK_counter - 1;
-            end
+      end
+      ACT_TO_RW_DELAY: begin
+        if (current_tCK == 1) begin
+          next_s = (t.RDnWR) ? READ : WRITE;
+        end else begin
+          next_tCK = current_tCK - 1;
         end
-    endtask
-
-    function logic is_col_valid(input logic [11:0] active_col);
-        return (active_col >= 12'h000 && active_col <= 12'hFFF);
-    endfunction
-    
-    function logic is_row_valid(input logic [3:0] active_row);
-        return (active_row >= 4'h0 && active_row <= 4'hF);
-    endfunction
-
-    event done_drv_write;
-    event done_mon_write;
-
-    virtual task write_drv(transaction transaction_from_drv);
-        `uvm_info("REF_MODEL",$sformatf("TRANSACTION received in reference_model from driver:"),UVM_MEDIUM)
-        dut(mcif.clk,mcif.rst_n,transaction_from_drv.cmd_n,transaction_from_drv.RDnWR,transaction_from_drv.Addr_in,transaction_from_drv.Data_in_vld,transaction_from_drv.Data_in,transaction_from_drv.Data_out,transaction_from_drv.data_out_vld,transaction_from_drv.command,transaction_from_drv.RA,transaction_from_drv.CA,transaction_from_drv.cs_n);
-        
-        ->done_drv_write;
-    
-    endtask
-
-    // virtual task write_mon(transaction transaction_from_mon);
-    //     `uvm_info("REF_MODEL",$sformatf("TRANSACTION received in reference_model from monitor:"),UVM_MEDIUM)
-    //     dut(mcif.clk,mcif.rst_n,transaction_from_mon.cmd_n,transaction_from_mon.RDnWR,transaction_from_mon.Addr_in,transaction_from_mon.Data_in_vld,transaction_from_mon.Data_in,transaction_from_mon.Data_out,transaction_from_mon.data_out_vld,transaction_from_mon.command,transaction_from_mon.RA,transaction_from_mon.CA,transaction_from_mon.cs_n);
-    //     ->done_mon_write;
-    // endtask
-
-
-
-    virtual task main_phase(uvm_phase phase);
-        @(done_drv_write);
-       // @(done_mon_write);
-        `uvm_info("REF_MODEL", "Inside main_phase, waiting for events...", UVM_NONE)
-        forever begin
-        fork : fork_1
-            begin
-                write_done.wait_trigger();
-                `uvm_info("REF_MODEL", "Write done event received from Driver", UVM_NONE)
-
-               
-            end
-            begin
-                read_done.wait_trigger();
-                `uvm_info("REF_MODEL", "Read done event received from Driver", UVM_NONE)
-
-                
-            end
-        join_any: fork_1
-        disable fork_1;
-        `uvm_info("REF_MODEL", "Done event received from Driver", UVM_NONE)
-        // send.write(transaction_from_drv);
+      end
+      WRITE: begin
+        if (refresh_needed) begin
+          next_s = REFRESH;
+          next_tCK = 5;
+        end else if (t.Data_in_vld && !t.cmd_n) begin
+          mem[t.Addr_in] = t.Data_in;
+          if (t.RDnWR) begin
+            next_s = WRITE_TO_READ_DELAY;
+            next_tCK = 4;
+          end else begin
+            // Assuming consecutive writes go back to WRITE state immediately for simplicity
+            next_s = WRITE;
+          end
+        end else if (!t.cmd_n) begin // Another command received
+          next_s = (t.RDnWR) ? READ : ACT; // Example transition
+          if (!t.RDnWR) next_ar = t.Addr_in[15:12];
         end
-    endtask
+      end
+      WRITE_TO_READ_DELAY: begin
+        if (current_tCK == 1) begin
+          next_s = READ;
+        end else begin
+          next_tCK = current_tCK - 1;
+        end
+      end
+      READ: begin
+        if (refresh_needed) begin
+          next_s = REFRESH;
+          next_tCK = 5;
+        end else if (is_col_valid(t.Addr_in[11:0])) begin
+          if (row_active && (active_row == t.Addr_in[15:12])) begin
+            if (!t.cmd_n && !t.RDnWR) begin
+              next_s = READ_TO_WRITE_DELAY;
+              next_tCK = 4;
+            end else if (!t.cmd_n && t.RDnWR) begin
+              next_s = READ_TO_READ_DELAY;
+              next_tCK = 2;
+            end else if (!t.cmd_n && t.command == CMD_PRE) begin
+              next_s = PRE;
+            end
+          end else if (!row_active && !t.cmd_n) begin
+              next_s = ACT;
+              next_ar = t.Addr_in[15:12];
+              next_ac = t.Addr_in[11:0];
+          end
+        end
+      end
+      READ_TO_READ_DELAY: begin
+        if (current_tCK == 1) begin
+          // No action needed here, the next state will be READ
+        end else begin
+          next_tCK = current_tCK - 1;
+        end
+      end
+      READ_TO_WRITE_DELAY: begin
+        if (current_tCK == 1) begin
+          next_s = WRITE;
+        end else begin
+          next_tCK = current_tCK - 1;
+        end
+      end
+      PRE: begin
+        next_ra = 0;
+        if (refresh_needed) begin
+          next_s = REFRESH;
+          next_tCK = 5;
+        end else if (!t.cmd_n && t.command == CMD_ACT) begin
+          next_s = ACT;
+          next_ar = t.Addr_in[15:12];
+          next_ac = t.Addr_in[11:0];
+        end else if (!t.cmd_n && t.command == CMD_IDLE) begin
+          next_s = IDLE;
+        end
+      end
+      REFRESH: begin
+        // Simplified refresh: assuming it takes a fixed number of cycles
+        if (current_tCK == 1) begin
+          refresh_needed = 0;
+          refresh_counter = 0;
+          next_s = IDLE;
+        end else begin
+          next_tCK = current_tCK - 1;
+        end
+      end
+      default: next_s = IDLE;
+    endcase
+
+    // Apply state and counter updates after considering the current transaction
+    if (mcif.rst_n == 0) begin
+      current_state <= IDLE;
+      active_row <= '0;
+      active_col <= '0;
+      row_active <= 0;
+      tCK_counter <= '0;
+      refresh_counter <= '0;
+      refresh_needed <= 0;
+    end else if (mcif.clk'event and mcif.clk == 1) begin
+      current_state <= next_s;
+      tCK_counter <= (next_tCK > 0) ? next_tCK : '0;
+      active_row <= next_ar;
+      active_col <= next_ac;
+      row_active <= next_ra;
+
+      if (refresh_counter == 13'd319) begin
+        refresh_needed <= 1;
+      end else if (current_state != REFRESH) begin
+        refresh_counter <= refresh_counter + 1;
+      end
+    end
+
+    // Predict output after the READ delay
+    if (current_s == READ && next_s != READ_TO_READ_DELAY && next_s != READ_TO_WRITE_DELAY) begin
+      transaction predicted_txn = transaction::type_id::create("predicted_txn");
+      predicted_txn.Data_out = mem[t.Addr_in];
+      predicted_txn.data_out_vld = 1'b1;
+      predicted_output_ap.write(predicted_txn);
+    end else begin
+      // For other states, output is not valid
+      transaction predicted_txn = transaction::type_id::create("predicted_txn");
+      predicted_txn.data_out_vld = 1'b0;
+      predicted_output_ap.write(predicted_txn);
+    end
+
+    done_processing.trigger();
+  endtask
+
+  function logic is_col_valid(input logic [11:0] active_col);
+    return (active_col >= 12'h000 && active_col <= 12'hFFF);
+  endfunction
+
+  function logic is_row_valid(input logic [3:0] active_row);
+    return (active_row >= 4'h0 && active_row <= 4'hF);
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    forever begin
+      @(done_processing);
+    end
+  endtask
 
 endclass
