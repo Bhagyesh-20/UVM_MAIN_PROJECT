@@ -1,9 +1,10 @@
 `uvm_analysis_imp_decl(_drv)
-
+`uvm_analysis_imp_decl(_mon)
 
 class ref_model extends uvm_component;
     `uvm_component_utils(ref_model)
     uvm_analysis_port #(transaction) send;
+
     transaction transaction_from_drv;
 
     uvm_event       read_done;
@@ -47,9 +48,7 @@ class ref_model extends uvm_component;
         // send.write(transaction_from_drv);
     endtask
 
-        
-
-     task dut(
+    task dut(
         input  logic        clk,
         input  logic        rst_n,
         input  logic        cmd_n,
@@ -63,7 +62,6 @@ class ref_model extends uvm_component;
         output  logic [3:0]  RA,           
         output  logic [11:0] CA,           
         output  logic        cs_n
-        //inout  logic [31:0] DQ,           
         );
 
         typedef enum logic [2:0] {
@@ -82,7 +80,6 @@ class ref_model extends uvm_component;
         } state_t;
     
         state_t state, next_state;
-        logic [31:0]    DQ;
         logic [3:0]     tCK_counter;
         logic [12:0]    refresh_counter; 
         logic           refresh_needed;
@@ -105,8 +102,8 @@ class ref_model extends uvm_component;
     
         logic [2:0]     command_buffer;
 	
-	reg [31:0]	Data_out_buffer;
-	reg [31:0]	Data_in_buffer;
+	    reg [31:0]	Data_out_buffer;
+	    reg [31:0]	Data_in_buffer;
 
         reg [31:0]      mem [0:65535];
         reg [31:0]      mem_buffer[0:65535];
@@ -118,13 +115,16 @@ class ref_model extends uvm_component;
         
         else begin
             @(posedge mcif.clk)begin
+                fsm_logic();
+                tck_counter();
+                refresh_needed();
                 state               = next_state;
                 active_row          = next_active_row;
                 active_col          = next_active_col;
                 row_active          = next_row_active;
                 
                 if(data_out_vld)begin
-                    Data_out        = Data_out_buffer; //when read to read delay is there data_out_buffer will store the data like DQ
+                    Data_out        = Data_out_buffer; //when read to read delay is there data_out_buffer will store the data like D'Q
                     read_done.trigger();
                 end
 
@@ -135,13 +135,25 @@ class ref_model extends uvm_component;
                 end
             end
         end
-
-
-
     endtask
 
+    task reset_dut();
+        state               = IDLE;
+        active_row          = 4'b0000;
+        active_col          = 12'b000000000000;
+        row_active          = 1'b0;
+        command_buffer      = CMD_NOP;
+        tCK_counter         = 4'b0000;
+        refresh_counter     = 13'b0000000000000;
+        refresh_needed      = 1'b0;
+        data_out_vld        = 1'b0;
+        Data_out_buffer     = 32'b0;
+        Data_in_buffer      = 32'b0;
+    endtask
+
+    
     task fsm_logic();
-	next_state              = state;
+	    next_state              = state;
         command_buffer          = CMD_NOP;
         next_active_row         = active_row;
         next_active_col         = active_col;
@@ -201,7 +213,7 @@ class ref_model extends uvm_component;
                         next_state = REFRESH;
                     end
                     else if (Data_in_vld) begin
-                        mem_buffer[Addr_in] = DQ;
+                        mem_buffer[Addr_in] = Data_in_buffer;
                         if (!cmd_n) begin
                             if (RDnWR) begin  
                                 if (active_row == next_active_row) begin
@@ -393,15 +405,27 @@ class ref_model extends uvm_component;
     endtask
 
 	task refresh_needed();
-		if(refresh_counter == 320)begin
-            refresh_needed = 1;
-        end
-        else begin
-            refresh_needed = 0;
+        @(posedge mcif.clk)begin
+            if(refresh_counter == 13'd320)begin
+            return 1;
+            end
+            else begin
+                refresh_counter ++;
+                return 0;
+            end
         end
 	endtask
 	
-
+    task tck_counter();
+        @(posedge mcif.clk)begin
+            if(tCK_counter == 0)begin
+                tCK_counter = 4'b0000;
+            end
+            else begin
+                tCK_counter = tCK_counter - 1;
+            end
+        end
+    endtask
 
     function logic is_col_valid(input logic [11:0] active_col);
         return (active_col >= 12'h000 && active_col <= 12'hFFF);
@@ -411,26 +435,11 @@ class ref_model extends uvm_component;
         return (active_row >= 4'h0 && active_row <= 4'hF);
     endfunction
 
-
-    
-
-
-    
-
-
     virtual task write_drv(transaction transaction_from_drv);
         `uvm_info("REF_MODEL",$sformatf("TRANSACTION received in reference_model from driver:"),UVM_MEDIUM)
         fork
         dut(mcif.clk,mcif.rst_n,transaction_from_drv.cmd_n,transaction_from_drv.RDnWR,transaction_from_drv.Addr_in,transaction_from_drv.Data_in_vld,transaction_from_drv.Data_in,transaction_from_drv.Data_out,transaction_from_drv.data_out_vld,transaction_from_drv.command,transaction_from_drv.RA,transaction_from_drv.CA,transaction_from_drv.cs_n);
-        
         join_none
-        
     endtask
 
-   
-
-
-   
-   
-    
 endclass

@@ -148,8 +148,8 @@
                         next_state = REFRESH;
                     end
                     else if (Data_in_vld) begin
-                        mem_buffer[Addr_in] = DQ;
                         if (!cmd_n) begin
+                        mem_buffer[Addr_in] = DQ;
                             if (RDnWR) begin  
                                 if (active_row == next_active_row) begin
                                     next_tCK_counter = 4;
@@ -350,7 +350,7 @@
                 refresh_counter <= 13'd0;
             end 
             else if (state == REFRESH) begin
-                refresh_needed <= 1'b0;   refre
+                refresh_needed <= 1'b0;   
             end
             else begin
                 refresh_counter <= refresh_counter + 1;
