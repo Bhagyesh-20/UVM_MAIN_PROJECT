@@ -42,7 +42,6 @@ class monitor extends uvm_monitor;
                 tc.CA           = mcif.CA;
                 tc.cs_n         = mcif.cs_n; 
                
-
                 if(mcif.command == 4'b0010 && mcif.RDnWR == 1'b1) begin
                     repeat(3) @(posedge mcif.clk);
                 end

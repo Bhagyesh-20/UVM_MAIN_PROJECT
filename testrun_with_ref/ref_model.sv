@@ -45,7 +45,7 @@ class ref_model extends uvm_component;
             if(!memory_checker.exists(t.Addr_in))begin
                 memory_checker[t.Addr_in] = t.Data_in;
                 `uvm_info("REF_MODEL", $sformatf("WRITE: Addr = %0h, Data = %0h", t.Addr_in, t.Data_in), UVM_NONE)
-            
+                
             end
             else begin
                 if(memory_checker[t.Addr_in]!=t.Data_in)begin

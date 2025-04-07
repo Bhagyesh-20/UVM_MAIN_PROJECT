@@ -39,6 +39,9 @@ class test extends uvm_test;
                 wr_seq.start(e.a.seqr);
                 
                 e.s.sb_done.wait_trigger();
+                wr_seq.start(e.a.seqr);
+                
+                e.s.sb_done.wait_trigger();
                 
                 wr_seq.start(e.a.seqr);
                 
@@ -56,6 +59,10 @@ class test extends uvm_test;
                
                 e.s.sb_done.wait_trigger();
                 
+                rd_seq.start(e.a.seqr);
+
+                e.s.sb_done.wait_trigger();
+
                 rd_seq.start(e.a.seqr);
 
                 e.s.sb_done.wait_trigger();
