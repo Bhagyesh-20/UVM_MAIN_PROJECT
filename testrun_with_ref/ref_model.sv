@@ -21,6 +21,8 @@ class ref_model extends uvm_component;
         recv_from_drv_to_ref_mdl = new("recv_from_drv_to_ref_mdl", this);
         if(!uvm_config_db#( virtual mem_ctrl_if)::get(this,"","mcif",mcif))
             `uvm_error("REF_MODEL","Unable to access config db")
+        uvm_top.print_topology();
+
     endfunction
 
    
@@ -30,14 +32,12 @@ class ref_model extends uvm_component;
         // Operation in the memory
         if(t.cmd_n == 0 && t.RDnWR)begin
             if (memory_checker.exists(t.Addr_in)) begin
-                @(posedge mcif.clk); 
                 t.expected_RA                = t.Addr_in[15:12];
                 t.expected_CA                = t.Addr_in[11:0];
                 t.expected_data_out          = memory_checker[t.Addr_in];
                 t.expected_data_out_vld      = 1'b1;
                 t.expected_cs_n              = 1'b0;
                 t.command                    = 3'b010;
-                send_to_sbd.put(t);
             end
         end
 
@@ -64,6 +64,7 @@ class ref_model extends uvm_component;
         else begin
             `uvm_info("REF_MODEL","cmd_n is 1, no operations can be performed",UVM_NONE)
         end
+        send_to_sbd.put(t);
     endtask
 
     

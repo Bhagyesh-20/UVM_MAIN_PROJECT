@@ -7,8 +7,6 @@ class scoreboard extends uvm_scoreboard;
     transaction tc;
     transaction expected;
 
-    // ref_model rf_mdl;
-    //monitor m;
     uvm_analysis_imp        #(transaction,scoreboard) recv_from_mon_to_sbd;
     uvm_blocking_put_imp #(transaction, scoreboard) recv_from_ref;
 
@@ -26,8 +24,7 @@ class scoreboard extends uvm_scoreboard;
         super.build_phase(phase);
         tc          = transaction::type_id::create("tc");
         expected = transaction::type_id::create("expected");
-        // rf_mdl      = ref_model::type_id::create("rf_mdl",this);
-        //m           = monitor::type_id::create("m",this);
+
         if (!uvm_config_db#(virtual mem_ctrl_if)::get(this, "", "mcif", mcif)) begin
             `uvm_fatal("SBD", "mcif interface handle is NULL. Check interface connection.")
         end
@@ -54,8 +51,8 @@ class scoreboard extends uvm_scoreboard;
              compare_CA(expected.expected_CA,tc.CA);                  // checking of Col Address
              compare_CN(expected.expected_cs_n,tc.cs_n);              // checking of cs_n bit
              compare_DO(expected.expected_data_out,tc.Data_out);      // checking of Data_out
-            sb_done.trigger();
             join_none
+            sb_done.trigger();
         end
             
         else begin

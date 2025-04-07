@@ -42,8 +42,8 @@ class driver extends uvm_driver #(transaction);
             mcif.Data_in        <= tc.Data_in;
             
             `uvm_info("DRV",$sformatf("DATA SENT FROM DRIVER CLASS : rst_n = %0b | cmd_n = %0b | RDnWR = %0b | Addr_in = %0h | Data_in_vld = %0b | Data_in = %0h DQ = %0h",tc.rst_n, tc.cmd_n, tc.RDnWR, tc.Addr_in, tc.Data_in_vld, tc.Data_in,mcif.DQ),UVM_NONE)
-            send_to_ref_drv.put(tc);
             repeat(9) @(posedge mcif.clk); 
+            send_to_ref_drv.put(tc);
             seq_item_port.item_done(tc);
             
         end

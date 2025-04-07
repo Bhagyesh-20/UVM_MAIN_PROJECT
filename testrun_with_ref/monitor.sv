@@ -11,17 +11,13 @@ class monitor extends uvm_monitor;
     function new(input string path = "monitor",uvm_component parent = null);
         super.new(path, parent);
         send            = new("send",this);
+        data_ready      = new();
     endfunction
 
-    
-    function void set_event(uvm_event e);
-        data_ready = e;
-    endfunction
 
 
     virtual function void build_phase(uvm_phase phase);
         super.build_phase(phase);
-        
         tc = transaction::type_id::create("tc"); 
         if(!uvm_config_db#( virtual mem_ctrl_if)::get(this,"","mcif",mcif))
             `uvm_error("MON","Unable to access config db")
@@ -43,7 +39,6 @@ class monitor extends uvm_monitor;
                 tc.Data_in_vld  = mcif.Data_in_vld;
                 tc.Data_in      = mcif.Data_in;
                 @(posedge mcif.clk);
-
                 tc.Data_out     = mcif.Data_out;
                 tc.data_out_vld = mcif.data_out_vld;
                 tc.command      = mcif.command;
@@ -55,7 +50,7 @@ class monitor extends uvm_monitor;
 
                 if(mcif.command == 4'b0010 && mcif.RDnWR == 1'b1) begin
                     repeat(3) @(posedge mcif.clk);
-                    //data_ready.trigger();
+                  //data_ready.trigger();
                     `uvm_info("MON",$sformatf("Data ready tc.Data_out :%0h",tc.Data_out),UVM_NONE)
                 end
                 send.write(tc);
