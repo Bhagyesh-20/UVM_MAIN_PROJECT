@@ -22,7 +22,7 @@ class monitor extends uvm_monitor;
 
     virtual task run_phase(uvm_phase phase);
         forever begin
-            repeat(2)@(posedge mcif.clk);
+            repeat(3)@(posedge mcif.clk);
             if(!mcif.rst_n)begin
                 `uvm_info("MON", "SYSTEM RESET DETECTED mcif.rst_n", UVM_NONE); 
                 prev_command = 4'b0000; 
@@ -35,7 +35,6 @@ class monitor extends uvm_monitor;
                 tc.Addr_in      = mcif.Addr_in;
                 tc.Data_in_vld  = mcif.Data_in_vld;
                 tc.Data_in      = mcif.Data_in;
-                @(posedge mcif.clk);
                 tc.Data_out     = mcif.Data_out;
                 tc.data_out_vld = mcif.data_out_vld;
                 tc.command      = mcif.command;
@@ -43,15 +42,14 @@ class monitor extends uvm_monitor;
                 tc.CA           = mcif.CA;
                 tc.cs_n         = mcif.cs_n; 
                
-                `uvm_info("MON",$sformatf("DATA SENT rst_n:%0b cmd_n:%0b RDnWR:%0b Addr_in:%0h Data_in_vld:%0b Data_in:%0h ",tc.rst_n, tc.cmd_n, tc.RDnWR, tc.Addr_in, tc.Data_in_vld, tc.Data_in),UVM_NONE)
 
                 if(mcif.command == 4'b0010 && mcif.RDnWR == 1'b1) begin
                     repeat(3) @(posedge mcif.clk);
                 end
-                send.write(tc);
+                    `uvm_info("MON",$sformatf("DATA SENT rst_n:%0b cmd_n:%0b RDnWR:%0b Addr_in:%0h Data_in_vld:%0b Data_in:%0h ",tc.rst_n, tc.cmd_n, tc.RDnWR, tc.Addr_in, tc.Data_in_vld, tc.Data_in),UVM_NONE)
+                    send.write(tc);
                 end
             end
-
     endtask
 endclass
 

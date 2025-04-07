@@ -70,6 +70,7 @@ class scoreboard extends uvm_scoreboard;
                     sb_done.trigger();
                 end
                 else begin
+                    `uvm_info("SBD", $sformatf("WRITE already done"), UVM_NONE)
                     sb_done.trigger();
                     return;
                 end

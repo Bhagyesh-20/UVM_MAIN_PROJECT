@@ -15,7 +15,7 @@ package mem_ctrl_pkg;
     `include "monitor.sv"
     `include "agent.sv"
     `include "scoreboard.sv"
-    `include "ref_model.sv"
+  //  `include "ref_model.sv"
     `include "env.sv"
     `include "test.sv"
 

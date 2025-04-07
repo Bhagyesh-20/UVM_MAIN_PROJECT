@@ -13,6 +13,7 @@ class driver extends uvm_driver #(transaction);
     function new(input string path = "driver", uvm_component parent  = null);
     
         super.new(path,parent);
+        send            = new("send",this);
         send_to_ref_drv = new("send_to_ref_drv", this);
     endfunction
     
