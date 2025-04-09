@@ -238,7 +238,7 @@ end
                      end
                     next_tCK_counter    = 5; 
                     next_state          = IDLE;
-                  
+                    
                 end
 
                 else begin

@@ -11,13 +11,14 @@ class scoreboard extends uvm_scoreboard;
     uvm_blocking_put_imp #(transaction, scoreboard) recv_from_ref;
 
 
-
+    uvm_event e;
 
     function new(input string path = "scoreboard",uvm_component parent = null);
         super.new(path,parent);
-        recv_from_mon_to_sbd        = new("recv_from_mon_to_sbd",this);
-        recv_from_ref               = new("recv_from_ref",this);
-        sb_done = new();
+        recv_from_mon_to_sbd = new("recv_from_mon_to_sbd",this);
+        recv_from_ref        = new("recv_from_ref",this);
+        e                    = uvm_event_pool::get_global_pool().get("data_ready");
+        sb_done              = new();
     endfunction
 
     virtual function void build_phase(uvm_phase phase);
@@ -31,10 +32,13 @@ class scoreboard extends uvm_scoreboard;
     endfunction 
 
    task put(transaction tr);
+
     expected = tr;
     `uvm_info("SBD", $sformatf("Received from refmodel: RA=%h CA=%h Data=%h", 
     tr.expected_RA, tr.expected_CA, tr.expected_data_out), UVM_NONE)
-
+    
+    `uvm_info("SBD_REF","Triggerred data",UVM_NONE)
+    
    endtask
 
     function void write(transaction t);
@@ -47,18 +51,22 @@ class scoreboard extends uvm_scoreboard;
         
         if( tc.command!=3'b010 && mcif.command!=3'b010 && tc.RDnWR)begin
             fork
-             compare_RA(expected.expected_RA,tc.RA);                  // checking of Row Address
-             compare_CA(expected.expected_CA,tc.CA);                  // checking of Col Address
-             compare_CN(expected.expected_cs_n,tc.cs_n);              // checking of cs_n bit
-             compare_DO(expected.expected_data_out,tc.Data_out);      // checking of Data_out
+                begin
+                    e.wait_trigger();
+                    compare_RA(expected.expected_RA,tc.RA);                  // checking of Row Address
+                    compare_CA(expected.expected_CA,tc.CA);                  // checking of Col Address
+                    compare_CN(expected.expected_cs_n,tc.cs_n);              // checking of cs_n bit
+                    compare_DO(expected.expected_data_out,tc.Data_out);      // checking of Data_out
+                end
             join_none
-            sb_done.trigger();
+            
         end
             
         else begin
-            `uvm_info("SBD","Else block",UVM_NONE);
+            `uvm_info("SBD","Else block Write",UVM_NONE);
             sb_done.trigger();
         end
+        
     endfunction
 
     function void compare_RA(input [3:0] from_sbd,input [3:0] from_tc);
@@ -90,13 +98,18 @@ class scoreboard extends uvm_scoreboard;
     endfunction
 
     task compare_DO(input bit [31:0] from_sbd, input bit [31:0] from_tc);
-        @(posedge mcif.clk);
+        `uvm_error("SBD_READ_DO_MCIF", $sformatf("Data out  expected = %0h | got = %0h | mcif_data_out = %0h | mcif_command = %0d | tc_command = %0d", from_sbd, from_tc,mcif.Data_out, mcif.command,tc.command));
+
+          @(posedge mcif.clk);
         begin
             if (from_sbd == from_tc) begin
                 `uvm_info("SBD_READ_DO", $sformatf("Data out success expected = %0h | got = %0h | mcif_command = %0d | tc_command = %0d", from_sbd, from_tc,mcif.command,tc.command), UVM_NONE);
             end
             else begin
-                `uvm_error("SBD_READ_DO", $sformatf("Data out failure expected = %0h | got = %0h | mcif_command = %0d | tc_command = %0d", from_sbd, from_tc, mcif.command,tc.command));
+                `uvm_error("SBD_READ_DO", $sformatf("Data out failure expected = %0h | got = %0h | mcif_data_out = %0h | mcif_command = %0d | tc_command = %0d", from_sbd, from_tc,mcif.Data_out, mcif.command,tc.command));
+                
+                `uvm_error("SBD_READ_DO", $sformatf("Data out failure expected = %0h | got = %0h | mcif_data_out = %0h | mcif_command = %0d | tc_command = %0d", from_sbd, from_tc,mcif.Data_out, mcif.command,tc.command));
+
             end
             sb_done.trigger();
         end

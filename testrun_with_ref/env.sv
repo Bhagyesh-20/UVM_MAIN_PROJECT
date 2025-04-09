@@ -4,11 +4,12 @@ class env extends uvm_env;
     agent a;
     scoreboard s;
     ref_model rf_mdl;
-    //uvm_event data_ready;
+    uvm_event data_ready_evt;
 
     function new(input string path = "env",uvm_component parent = null);
         super.new(path,parent);
-      //  data_ready = new("data_ready"); 
+        data_ready_evt = uvm_event_pool::get_global_pool().get("data_ready");
+
     endfunction
 
     virtual function void build_phase(uvm_phase phase);

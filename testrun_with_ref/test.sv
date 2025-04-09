@@ -11,12 +11,9 @@ class test extends uvm_test;
     wr_invld_sequence       wr_invld_seq;    // data_in_vald == 0
     wr_sequence             wr_seq;         // wr== 1 sequence
 
-    uvm_event data_ready;
-
 
     function new(input string path = "test",uvm_component parent = null);
         super.new(path,parent);
-        data_ready = new();
     endfunction
 
 

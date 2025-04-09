@@ -1,14 +1,14 @@
 QuestaSim-64 qrun 2024.1 Utility 2024.02 Feb  1 2024
-Start time: 10:23:53 on Apr 03,2025
+Start time: 10:57:43 on Apr 09,2025
 qrun tb_top.sv 
 QuestaSim-64 vlog 2024.1 Compiler 2024.02 Feb  1 2024
-Start time: 10:23:54 on Apr 03,2025
+Start time: 10:57:43 on Apr 09,2025
 vlog tb_top.sv -work ./work -statslog qrun.out/stats_log -writesessionid "+qrun.out/top_dus" -csession=incr -csessionid=1 
 ** Error: (vlog-7) Failed to open design unit file "tb_top.sv" in read mode.
 No such file or directory. (errno = ENOENT)
-End time: 10:23:54 on Apr 03,2025, Elapsed time: 0:00:00
+End time: 10:57:43 on Apr 09,2025, Elapsed time: 0:00:00
 Errors: 1, Warnings: 0
-End time: 10:23:54 on Apr 03,2025, Elapsed time: 0:00:01
+End time: 10:57:43 on Apr 09,2025, Elapsed time: 0:00:00
 *** Summary *********************************************
     qrun: Errors:   0, Warnings:   0
     vlog: Errors:   1, Warnings:   0

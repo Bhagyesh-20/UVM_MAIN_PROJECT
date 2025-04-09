@@ -1,8 +1,8 @@
 QuestaSim-64 qrun 2024.1 Utility 2024.02 Feb  1 2024
-Start time: 16:18:27 on Apr 07,2025
+Start time: 13:35:07 on Apr 09,2025
 qrun tb_top.sv 
 QuestaSim-64 vlog 2024.1 Compiler 2024.02 Feb  1 2024
-Start time: 16:18:27 on Apr 07,2025
+Start time: 13:35:07 on Apr 09,2025
 vlog tb_top.sv -work ./work -statslog qrun.out/stats_log -writesessionid "+qrun.out/top_dus" -csession=incr -csessionid=7 
 ** Note: (vlog-2286) tb_top.sv(2): Using implicit +incdir+C:/questasim64_2024.1/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
 -- Compiling package tb_top_sv_unit
@@ -15,10 +15,10 @@ vlog tb_top.sv -work ./work -statslog qrun.out/stats_log -writesessionid "+qrun.
 
 Top level modules:
 	tb_top
-End time: 16:18:28 on Apr 07,2025, Elapsed time: 0:00:01
+End time: 13:35:08 on Apr 09,2025, Elapsed time: 0:00:01
 Errors: 0, Warnings: 0
 QuestaSim-64 vopt 2024.1 Compiler 2024.02 Feb  1 2024
-Start time: 16:18:29 on Apr 07,2025
+Start time: 13:35:08 on Apr 09,2025
 vopt -findtoplevels D:/UVM/UVM_MAIN_PROJECT/testrun/work+7+ -work ./work -statslog qrun.out/stats_log -csession=incr -o qrun_opt_1 -csessionid=30 
 
 Top level modules:
@@ -38,10 +38,10 @@ Optimizing 6 design-units (inlining 2/3 module instances):
 -- Optimizing module tb_top(fast)
 -- Optimizing interface mem_ctrl_if(fast)
 Optimized design name is qrun_opt_1
-End time: 16:18:32 on Apr 07,2025, Elapsed time: 0:00:03
+End time: 13:35:09 on Apr 09,2025, Elapsed time: 0:00:01
 Errors: 0, Warnings: 0
 # vsim -lib ./work -c -do "run -all; quit -f" -statslog qrun.out/stats_log qrun_opt_1 -appendlog -l qrun.log -csession=incr -csessionid=9 
-# Start time: 16:18:34 on Apr 07,2025
+# Start time: 13:35:10 on Apr 09,2025
 # //  Questa Sim-64
 # //  Version 2024.1 win64 Feb  1 2024
 # //
@@ -90,225 +90,225 @@ Errors: 0, Warnings: 0
 # UVM_INFO @ 0: reporter [RNTST] Running test test...
 # UVM_INFO wr_sequence.sv(22) @ 0: uvm_test_top.e.a.seqr@@wr_seq [wr_sequence] rst_n = 1 | cmd_n = 0 | RDnWR = 0 | Addr_in = c7e0 | Data_in_vld = 1 | Data_in = 18573867
 # UVM_INFO driver.sv(46) @ 0: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 0 | Addr_in = c7e0 | Data_in_vld = 1 | Data_in = 18573867 DQ = x
-# UVM_INFO monitor.sv(48) @ 30: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c7e0 Data_in_vld:1 Data_in:18573867 
+# UVM_INFO monitor.sv(53) @ 30: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c7e0 Data_in_vld:1 Data_in:18573867 
 # UVM_INFO scoreboard.sv(63) @ 30: uvm_test_top.e.s [SBD] WRITE: Addr = c7e0, Data = 18573867
-# UVM_INFO monitor.sv(48) @ 60: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c7e0 Data_in_vld:1 Data_in:18573867 
+# UVM_INFO monitor.sv(53) @ 60: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c7e0 Data_in_vld:1 Data_in:18573867 
 # UVM_INFO scoreboard.sv(73) @ 60: uvm_test_top.e.s [SBD] WRITE already done
-# UVM_INFO monitor.sv(48) @ 90: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c7e0 Data_in_vld:1 Data_in:18573867 
+# UVM_INFO monitor.sv(53) @ 90: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c7e0 Data_in_vld:1 Data_in:18573867 
 # UVM_INFO scoreboard.sv(73) @ 90: uvm_test_top.e.s [SBD] WRITE already done
-# UVM_INFO monitor.sv(48) @ 120: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c7e0 Data_in_vld:1 Data_in:18573867 
+# UVM_INFO monitor.sv(53) @ 120: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c7e0 Data_in_vld:1 Data_in:18573867 
 # UVM_INFO scoreboard.sv(73) @ 120: uvm_test_top.e.s [SBD] WRITE already done
 # UVM_INFO wr_sequence.sv(22) @ 120: uvm_test_top.e.a.seqr@@wr_seq [wr_sequence] rst_n = 1 | cmd_n = 0 | RDnWR = 0 | Addr_in = a06a | Data_in_vld = 1 | Data_in = 9633abb8
 # UVM_INFO driver.sv(46) @ 120: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 0 | Addr_in = a06a | Data_in_vld = 1 | Data_in = 9633abb8 DQ = 18573867
-# UVM_INFO monitor.sv(48) @ 150: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:a06a Data_in_vld:1 Data_in:9633abb8 
+# UVM_INFO monitor.sv(53) @ 150: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:a06a Data_in_vld:1 Data_in:9633abb8 
 # UVM_INFO scoreboard.sv(63) @ 150: uvm_test_top.e.s [SBD] WRITE: Addr = a06a, Data = 9633abb8
-# UVM_INFO monitor.sv(48) @ 180: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:a06a Data_in_vld:1 Data_in:9633abb8 
+# UVM_INFO monitor.sv(53) @ 180: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:a06a Data_in_vld:1 Data_in:9633abb8 
 # UVM_INFO scoreboard.sv(73) @ 180: uvm_test_top.e.s [SBD] WRITE already done
-# UVM_INFO monitor.sv(48) @ 210: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:a06a Data_in_vld:1 Data_in:9633abb8 
+# UVM_INFO monitor.sv(53) @ 210: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:a06a Data_in_vld:1 Data_in:9633abb8 
 # UVM_INFO scoreboard.sv(73) @ 210: uvm_test_top.e.s [SBD] WRITE already done
-# UVM_INFO monitor.sv(48) @ 240: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:a06a Data_in_vld:1 Data_in:9633abb8 
+# UVM_INFO monitor.sv(53) @ 240: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:a06a Data_in_vld:1 Data_in:9633abb8 
 # UVM_INFO scoreboard.sv(73) @ 240: uvm_test_top.e.s [SBD] WRITE already done
 # UVM_INFO wr_sequence.sv(22) @ 240: uvm_test_top.e.a.seqr@@wr_seq [wr_sequence] rst_n = 1 | cmd_n = 0 | RDnWR = 0 | Addr_in = 29ca | Data_in_vld = 1 | Data_in = c8223e8c
 # UVM_INFO driver.sv(46) @ 240: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 0 | Addr_in = 29ca | Data_in_vld = 1 | Data_in = c8223e8c DQ = 9633abb8
-# UVM_INFO monitor.sv(48) @ 270: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:29ca Data_in_vld:1 Data_in:c8223e8c 
+# UVM_INFO monitor.sv(53) @ 270: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:29ca Data_in_vld:1 Data_in:c8223e8c 
 # UVM_INFO scoreboard.sv(63) @ 270: uvm_test_top.e.s [SBD] WRITE: Addr = 29ca, Data = c8223e8c
-# UVM_INFO monitor.sv(48) @ 300: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:29ca Data_in_vld:1 Data_in:c8223e8c 
+# UVM_INFO monitor.sv(53) @ 300: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:29ca Data_in_vld:1 Data_in:c8223e8c 
 # UVM_INFO scoreboard.sv(73) @ 300: uvm_test_top.e.s [SBD] WRITE already done
-# UVM_INFO monitor.sv(48) @ 330: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:29ca Data_in_vld:1 Data_in:c8223e8c 
+# UVM_INFO monitor.sv(53) @ 330: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:29ca Data_in_vld:1 Data_in:c8223e8c 
 # UVM_INFO scoreboard.sv(73) @ 330: uvm_test_top.e.s [SBD] WRITE already done
-# UVM_INFO monitor.sv(48) @ 360: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:29ca Data_in_vld:1 Data_in:c8223e8c 
+# UVM_INFO monitor.sv(53) @ 360: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:29ca Data_in_vld:1 Data_in:c8223e8c 
 # UVM_INFO scoreboard.sv(73) @ 360: uvm_test_top.e.s [SBD] WRITE already done
 # UVM_INFO wr_sequence.sv(22) @ 360: uvm_test_top.e.a.seqr@@wr_seq [wr_sequence] rst_n = 1 | cmd_n = 0 | RDnWR = 0 | Addr_in = d67f | Data_in_vld = 1 | Data_in = 50d14e4d
 # UVM_INFO driver.sv(46) @ 360: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 0 | Addr_in = d67f | Data_in_vld = 1 | Data_in = 50d14e4d DQ = c8223e8c
-# UVM_INFO monitor.sv(48) @ 390: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:d67f Data_in_vld:1 Data_in:50d14e4d 
+# UVM_INFO monitor.sv(53) @ 390: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:d67f Data_in_vld:1 Data_in:50d14e4d 
 # UVM_INFO scoreboard.sv(63) @ 390: uvm_test_top.e.s [SBD] WRITE: Addr = d67f, Data = 50d14e4d
-# UVM_INFO monitor.sv(48) @ 420: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:d67f Data_in_vld:1 Data_in:50d14e4d 
+# UVM_INFO monitor.sv(53) @ 420: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:d67f Data_in_vld:1 Data_in:50d14e4d 
 # UVM_INFO scoreboard.sv(73) @ 420: uvm_test_top.e.s [SBD] WRITE already done
-# UVM_INFO monitor.sv(48) @ 450: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:d67f Data_in_vld:1 Data_in:50d14e4d 
+# UVM_INFO monitor.sv(53) @ 450: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:d67f Data_in_vld:1 Data_in:50d14e4d 
 # UVM_INFO scoreboard.sv(73) @ 450: uvm_test_top.e.s [SBD] WRITE already done
-# UVM_INFO monitor.sv(48) @ 480: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:d67f Data_in_vld:1 Data_in:50d14e4d 
+# UVM_INFO monitor.sv(53) @ 480: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:d67f Data_in_vld:1 Data_in:50d14e4d 
 # UVM_INFO scoreboard.sv(73) @ 480: uvm_test_top.e.s [SBD] WRITE already done
 # UVM_INFO wr_sequence.sv(22) @ 480: uvm_test_top.e.a.seqr@@wr_seq [wr_sequence] rst_n = 1 | cmd_n = 0 | RDnWR = 0 | Addr_in = c5ea | Data_in_vld = 1 | Data_in = 216c33a5
 # UVM_INFO driver.sv(46) @ 480: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 0 | Addr_in = c5ea | Data_in_vld = 1 | Data_in = 216c33a5 DQ = 50d14e4d
-# UVM_INFO monitor.sv(48) @ 510: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c5ea Data_in_vld:1 Data_in:216c33a5 
+# UVM_INFO monitor.sv(53) @ 510: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c5ea Data_in_vld:1 Data_in:216c33a5 
 # UVM_INFO scoreboard.sv(63) @ 510: uvm_test_top.e.s [SBD] WRITE: Addr = c5ea, Data = 216c33a5
-# UVM_INFO monitor.sv(48) @ 540: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c5ea Data_in_vld:1 Data_in:216c33a5 
+# UVM_INFO monitor.sv(53) @ 540: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c5ea Data_in_vld:1 Data_in:216c33a5 
 # UVM_INFO scoreboard.sv(73) @ 540: uvm_test_top.e.s [SBD] WRITE already done
-# UVM_INFO monitor.sv(48) @ 570: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c5ea Data_in_vld:1 Data_in:216c33a5 
+# UVM_INFO monitor.sv(53) @ 570: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c5ea Data_in_vld:1 Data_in:216c33a5 
 # UVM_INFO scoreboard.sv(73) @ 570: uvm_test_top.e.s [SBD] WRITE already done
-# UVM_INFO monitor.sv(48) @ 600: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c5ea Data_in_vld:1 Data_in:216c33a5 
+# UVM_INFO monitor.sv(53) @ 600: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:0 Addr_in:c5ea Data_in_vld:1 Data_in:216c33a5 
 # UVM_INFO scoreboard.sv(73) @ 600: uvm_test_top.e.s [SBD] WRITE already done
 # UVM_INFO rd_sequence.sv(26) @ 600: uvm_test_top.e.a.seqr@@rd_seq [RD_SEQ] rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = a06a | Data_in_vld = 0 | Data_in = 0
 # UVM_INFO driver.sv(46) @ 600: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = a06a | Data_in_vld = 0 | Data_in = 0 DQ = 216c33a5
-# UVM_INFO monitor.sv(48) @ 630: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 660: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 690: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 720: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 750: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 780: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 810: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 840: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 630: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 660: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 690: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 720: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 750: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 780: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 810: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 840: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
 # UVM_INFO scoreboard.sv(90) @ 840: uvm_test_top.e.s [SBD_READ_RA] RA Success
 # UVM_INFO scoreboard.sv(99) @ 840: uvm_test_top.e.s [SBD_READ_CA] CA Success
 # UVM_INFO scoreboard.sv(109) @ 840: uvm_test_top.e.s [SBD_READ_CN] Csn Success
 # UVM_INFO scoreboard.sv(121) @ 850: uvm_test_top.e.s [SBD_READ_DO] Data out success had = 9633abb8 expected = 9633abb8 | got = 9633abb8 | mcif_command = 0 | tc_command = 0
 # UVM_INFO rd_sequence.sv(26) @ 850: uvm_test_top.e.a.seqr@@rd_seq [RD_SEQ] rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = c5ea | Data_in_vld = 0 | Data_in = 0
 # UVM_INFO driver.sv(46) @ 850: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = c5ea | Data_in_vld = 0 | Data_in = 0 DQ = z
-# UVM_INFO monitor.sv(48) @ 900: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 930: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 960: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 990: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1050: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1080: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1110: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 900: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 930: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 960: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 990: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1050: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1080: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1110: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
 # UVM_INFO scoreboard.sv(90) @ 1110: uvm_test_top.e.s [SBD_READ_RA] RA Success
 # UVM_INFO scoreboard.sv(99) @ 1110: uvm_test_top.e.s [SBD_READ_CA] CA Success
 # UVM_INFO scoreboard.sv(109) @ 1110: uvm_test_top.e.s [SBD_READ_CN] Csn Success
 # UVM_INFO scoreboard.sv(121) @ 1120: uvm_test_top.e.s [SBD_READ_DO] Data out success had = 216c33a5 expected = 216c33a5 | got = 216c33a5 | mcif_command = 0 | tc_command = 0
 # UVM_INFO rd_sequence.sv(26) @ 1120: uvm_test_top.e.a.seqr@@rd_seq [RD_SEQ] rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = c5ea | Data_in_vld = 0 | Data_in = 0
 # UVM_INFO driver.sv(46) @ 1120: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = c5ea | Data_in_vld = 0 | Data_in = 0 DQ = z
-# UVM_INFO monitor.sv(48) @ 1170: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1200: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1230: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1170: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1200: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1230: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:c5ea Data_in_vld:0 Data_in:0 
 # UVM_INFO scoreboard.sv(90) @ 1230: uvm_test_top.e.s [SBD_READ_RA] RA Success
 # UVM_INFO scoreboard.sv(99) @ 1230: uvm_test_top.e.s [SBD_READ_CA] CA Success
 # UVM_INFO scoreboard.sv(109) @ 1230: uvm_test_top.e.s [SBD_READ_CN] Csn Success
 # UVM_INFO scoreboard.sv(121) @ 1240: uvm_test_top.e.s [SBD_READ_DO] Data out success had = 216c33a5 expected = 216c33a5 | got = 216c33a5 | mcif_command = 0 | tc_command = 0
 # UVM_INFO rd_sequence.sv(26) @ 1240: uvm_test_top.e.a.seqr@@rd_seq [RD_SEQ] rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = 29ca | Data_in_vld = 0 | Data_in = 0
 # UVM_INFO driver.sv(46) @ 1240: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = 29ca | Data_in_vld = 0 | Data_in = 0 DQ = z
-# UVM_INFO monitor.sv(48) @ 1290: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1320: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1350: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1380: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1440: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1470: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1500: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1290: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1320: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1350: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1380: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1440: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1470: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1500: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
 # UVM_INFO scoreboard.sv(90) @ 1500: uvm_test_top.e.s [SBD_READ_RA] RA Success
 # UVM_INFO scoreboard.sv(99) @ 1500: uvm_test_top.e.s [SBD_READ_CA] CA Success
 # UVM_INFO scoreboard.sv(109) @ 1500: uvm_test_top.e.s [SBD_READ_CN] Csn Success
 # UVM_INFO scoreboard.sv(121) @ 1510: uvm_test_top.e.s [SBD_READ_DO] Data out success had = c8223e8c expected = c8223e8c | got = c8223e8c | mcif_command = 0 | tc_command = 0
 # UVM_INFO rd_sequence.sv(26) @ 1510: uvm_test_top.e.a.seqr@@rd_seq [RD_SEQ] rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = a06a | Data_in_vld = 0 | Data_in = 0
 # UVM_INFO driver.sv(46) @ 1510: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = a06a | Data_in_vld = 0 | Data_in = 0 DQ = z
-# UVM_INFO monitor.sv(48) @ 1560: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1590: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1620: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1650: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1710: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1740: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1770: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1560: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1590: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1620: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1650: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1710: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1740: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1770: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:a06a Data_in_vld:0 Data_in:0 
 # UVM_INFO scoreboard.sv(90) @ 1770: uvm_test_top.e.s [SBD_READ_RA] RA Success
 # UVM_INFO scoreboard.sv(99) @ 1770: uvm_test_top.e.s [SBD_READ_CA] CA Success
 # UVM_INFO scoreboard.sv(109) @ 1770: uvm_test_top.e.s [SBD_READ_CN] Csn Success
 # UVM_INFO scoreboard.sv(121) @ 1780: uvm_test_top.e.s [SBD_READ_DO] Data out success had = 9633abb8 expected = 9633abb8 | got = 9633abb8 | mcif_command = 0 | tc_command = 0
 # UVM_INFO rd_sequence.sv(26) @ 1780: uvm_test_top.e.a.seqr@@rd_seq [RD_SEQ] rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = 29ca | Data_in_vld = 0 | Data_in = 0
 # UVM_INFO driver.sv(46) @ 1780: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = 29ca | Data_in_vld = 0 | Data_in = 0 DQ = z
-# UVM_INFO monitor.sv(48) @ 1830: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1860: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1890: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1920: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 1980: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 2010: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 2040: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1830: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1860: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1890: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1920: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 1980: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 2010: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 2040: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:29ca Data_in_vld:0 Data_in:0 
 # UVM_INFO scoreboard.sv(90) @ 2040: uvm_test_top.e.s [SBD_READ_RA] RA Success
 # UVM_INFO scoreboard.sv(99) @ 2040: uvm_test_top.e.s [SBD_READ_CA] CA Success
 # UVM_INFO scoreboard.sv(109) @ 2040: uvm_test_top.e.s [SBD_READ_CN] Csn Success
 # UVM_INFO scoreboard.sv(121) @ 2050: uvm_test_top.e.s [SBD_READ_DO] Data out success had = c8223e8c expected = c8223e8c | got = c8223e8c | mcif_command = 0 | tc_command = 0
 # UVM_INFO rd_sequence.sv(26) @ 2050: uvm_test_top.e.a.seqr@@rd_seq [RD_SEQ] rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = d67f | Data_in_vld = 0 | Data_in = 0
 # UVM_INFO driver.sv(46) @ 2050: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 0 | RDnWR = 1 | Addr_in = d67f | Data_in_vld = 0 | Data_in = 0 DQ = z
-# UVM_INFO monitor.sv(48) @ 2100: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 2130: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 2160: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 2190: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 2250: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 2280: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
-# UVM_INFO monitor.sv(48) @ 2310: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 2100: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 2130: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 2160: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 2190: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 2250: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 2280: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
+# UVM_INFO monitor.sv(53) @ 2310: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:0 RDnWR:1 Addr_in:d67f Data_in_vld:0 Data_in:0 
 # UVM_INFO scoreboard.sv(90) @ 2310: uvm_test_top.e.s [SBD_READ_RA] RA Success
 # UVM_INFO scoreboard.sv(99) @ 2310: uvm_test_top.e.s [SBD_READ_CA] CA Success
 # UVM_INFO scoreboard.sv(109) @ 2310: uvm_test_top.e.s [SBD_READ_CN] Csn Success
 # UVM_INFO scoreboard.sv(121) @ 2320: uvm_test_top.e.s [SBD_READ_DO] Data out success had = 50d14e4d expected = 50d14e4d | got = 50d14e4d | mcif_command = 0 | tc_command = 0
 # UVM_INFO wr_invld_sequence.sv(18) @ 2320: uvm_test_top.e.a.seqr@@wr_invld_seq [WR_INVLD_SEQ] rst_n = 0 | cmd_n = 0 | RDnWR = 0 | Addr_in = b1a7 | Data_in_vld = 0 | Data_in = 8a6843a6
 # UVM_INFO driver.sv(46) @ 2320: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = b1a7 | Data_in_vld = 0 | Data_in = 8a6843a6 DQ = z
-# UVM_INFO monitor.sv(48) @ 2340: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:b1a7 Data_in_vld:0 Data_in:8a6843a6 
+# UVM_INFO monitor.sv(53) @ 2340: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:b1a7 Data_in_vld:0 Data_in:8a6843a6 
 # UVM_INFO scoreboard.sv(82) @ 2340: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2370: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:b1a7 Data_in_vld:0 Data_in:8a6843a6 
+# UVM_INFO monitor.sv(53) @ 2370: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:b1a7 Data_in_vld:0 Data_in:8a6843a6 
 # UVM_INFO scoreboard.sv(82) @ 2370: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2400: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:b1a7 Data_in_vld:0 Data_in:8a6843a6 
+# UVM_INFO monitor.sv(53) @ 2400: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:b1a7 Data_in_vld:0 Data_in:8a6843a6 
 # UVM_INFO scoreboard.sv(82) @ 2400: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
 # UVM_INFO wr_invld_sequence.sv(18) @ 2410: uvm_test_top.e.a.seqr@@wr_invld_seq [WR_INVLD_SEQ] rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = df82 | Data_in_vld = 1 | Data_in = 41eb25e6
 # UVM_INFO driver.sv(46) @ 2410: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = df82 | Data_in_vld = 0 | Data_in = 41eb25e6 DQ = z
-# UVM_INFO monitor.sv(48) @ 2430: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:df82 Data_in_vld:0 Data_in:41eb25e6 
+# UVM_INFO monitor.sv(53) @ 2430: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:df82 Data_in_vld:0 Data_in:41eb25e6 
 # UVM_INFO scoreboard.sv(82) @ 2430: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2460: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:df82 Data_in_vld:0 Data_in:41eb25e6 
+# UVM_INFO monitor.sv(53) @ 2460: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:df82 Data_in_vld:0 Data_in:41eb25e6 
 # UVM_INFO scoreboard.sv(82) @ 2460: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2490: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:df82 Data_in_vld:0 Data_in:41eb25e6 
+# UVM_INFO monitor.sv(53) @ 2490: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:df82 Data_in_vld:0 Data_in:41eb25e6 
 # UVM_INFO scoreboard.sv(82) @ 2490: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
 # UVM_INFO wr_invld_sequence.sv(18) @ 2500: uvm_test_top.e.a.seqr@@wr_invld_seq [WR_INVLD_SEQ] rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 3b20 | Data_in_vld = 0 | Data_in = 620fe048
 # UVM_INFO driver.sv(46) @ 2500: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 3b20 | Data_in_vld = 0 | Data_in = 620fe048 DQ = z
-# UVM_INFO monitor.sv(48) @ 2520: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:3b20 Data_in_vld:0 Data_in:620fe048 
+# UVM_INFO monitor.sv(53) @ 2520: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:3b20 Data_in_vld:0 Data_in:620fe048 
 # UVM_INFO scoreboard.sv(82) @ 2520: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2550: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:3b20 Data_in_vld:0 Data_in:620fe048 
+# UVM_INFO monitor.sv(53) @ 2550: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:3b20 Data_in_vld:0 Data_in:620fe048 
 # UVM_INFO scoreboard.sv(82) @ 2550: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2580: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:3b20 Data_in_vld:0 Data_in:620fe048 
+# UVM_INFO monitor.sv(53) @ 2580: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:3b20 Data_in_vld:0 Data_in:620fe048 
 # UVM_INFO scoreboard.sv(82) @ 2580: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
 # UVM_INFO wr_invld_sequence.sv(18) @ 2590: uvm_test_top.e.a.seqr@@wr_invld_seq [WR_INVLD_SEQ] rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = f62d | Data_in_vld = 0 | Data_in = af586f93
 # UVM_INFO driver.sv(46) @ 2590: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = f62d | Data_in_vld = 0 | Data_in = af586f93 DQ = z
-# UVM_INFO monitor.sv(48) @ 2610: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:f62d Data_in_vld:0 Data_in:af586f93 
+# UVM_INFO monitor.sv(53) @ 2610: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:f62d Data_in_vld:0 Data_in:af586f93 
 # UVM_INFO scoreboard.sv(82) @ 2610: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2640: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:f62d Data_in_vld:0 Data_in:af586f93 
+# UVM_INFO monitor.sv(53) @ 2640: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:f62d Data_in_vld:0 Data_in:af586f93 
 # UVM_INFO scoreboard.sv(82) @ 2640: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2670: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:f62d Data_in_vld:0 Data_in:af586f93 
+# UVM_INFO monitor.sv(53) @ 2670: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:f62d Data_in_vld:0 Data_in:af586f93 
 # UVM_INFO scoreboard.sv(82) @ 2670: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
 # UVM_INFO wr_invld_sequence.sv(18) @ 2680: uvm_test_top.e.a.seqr@@wr_invld_seq [WR_INVLD_SEQ] rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 1592 | Data_in_vld = 1 | Data_in = b3d1947
 # UVM_INFO driver.sv(46) @ 2680: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 1592 | Data_in_vld = 0 | Data_in = b3d1947 DQ = z
-# UVM_INFO monitor.sv(48) @ 2700: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1592 Data_in_vld:0 Data_in:b3d1947 
+# UVM_INFO monitor.sv(53) @ 2700: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1592 Data_in_vld:0 Data_in:b3d1947 
 # UVM_INFO scoreboard.sv(82) @ 2700: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2730: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1592 Data_in_vld:0 Data_in:b3d1947 
+# UVM_INFO monitor.sv(53) @ 2730: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1592 Data_in_vld:0 Data_in:b3d1947 
 # UVM_INFO scoreboard.sv(82) @ 2730: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2760: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1592 Data_in_vld:0 Data_in:b3d1947 
+# UVM_INFO monitor.sv(53) @ 2760: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1592 Data_in_vld:0 Data_in:b3d1947 
 # UVM_INFO scoreboard.sv(82) @ 2760: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2790: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1592 Data_in_vld:0 Data_in:b3d1947 
+# UVM_INFO monitor.sv(53) @ 2790: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1592 Data_in_vld:0 Data_in:b3d1947 
 # UVM_INFO scoreboard.sv(82) @ 2790: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
 # UVM_INFO cmd_n_sequence.sv(20) @ 2790: uvm_test_top.e.a.seqr@@cdn_seq [CMD_N_SEQ] rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 98e3 | Data_in_vld = 0 | Data_in = 33243651
 # UVM_INFO driver.sv(46) @ 2790: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 98e3 | Data_in_vld = 0 | Data_in = 33243651 DQ = z
-# UVM_INFO monitor.sv(48) @ 2820: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:98e3 Data_in_vld:0 Data_in:33243651 
+# UVM_INFO monitor.sv(53) @ 2820: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:98e3 Data_in_vld:0 Data_in:33243651 
 # UVM_INFO scoreboard.sv(82) @ 2820: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2850: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:98e3 Data_in_vld:0 Data_in:33243651 
+# UVM_INFO monitor.sv(53) @ 2850: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:98e3 Data_in_vld:0 Data_in:33243651 
 # UVM_INFO scoreboard.sv(82) @ 2850: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2880: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:98e3 Data_in_vld:0 Data_in:33243651 
+# UVM_INFO monitor.sv(53) @ 2880: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:98e3 Data_in_vld:0 Data_in:33243651 
 # UVM_INFO scoreboard.sv(82) @ 2880: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
 # UVM_INFO cmd_n_sequence.sv(20) @ 2880: uvm_test_top.e.a.seqr@@cdn_seq [CMD_N_SEQ] rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = cb46 | Data_in_vld = 0 | Data_in = fb112d3d
 # UVM_INFO driver.sv(46) @ 2880: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = cb46 | Data_in_vld = 0 | Data_in = fb112d3d DQ = z
-# UVM_INFO monitor.sv(48) @ 2910: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:cb46 Data_in_vld:0 Data_in:fb112d3d 
+# UVM_INFO monitor.sv(53) @ 2910: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:cb46 Data_in_vld:0 Data_in:fb112d3d 
 # UVM_INFO scoreboard.sv(82) @ 2910: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2940: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:cb46 Data_in_vld:0 Data_in:fb112d3d 
+# UVM_INFO monitor.sv(53) @ 2940: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:cb46 Data_in_vld:0 Data_in:fb112d3d 
 # UVM_INFO scoreboard.sv(82) @ 2940: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 2970: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:cb46 Data_in_vld:0 Data_in:fb112d3d 
+# UVM_INFO monitor.sv(53) @ 2970: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:cb46 Data_in_vld:0 Data_in:fb112d3d 
 # UVM_INFO scoreboard.sv(82) @ 2970: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
 # UVM_INFO cmd_n_sequence.sv(20) @ 2970: uvm_test_top.e.a.seqr@@cdn_seq [CMD_N_SEQ] rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 4030 | Data_in_vld = 0 | Data_in = d35addf7
 # UVM_INFO driver.sv(46) @ 2970: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 4030 | Data_in_vld = 0 | Data_in = d35addf7 DQ = z
-# UVM_INFO monitor.sv(48) @ 3000: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:4030 Data_in_vld:0 Data_in:d35addf7 
+# UVM_INFO monitor.sv(53) @ 3000: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:4030 Data_in_vld:0 Data_in:d35addf7 
 # UVM_INFO scoreboard.sv(82) @ 3000: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 3030: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:4030 Data_in_vld:0 Data_in:d35addf7 
+# UVM_INFO monitor.sv(53) @ 3030: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:4030 Data_in_vld:0 Data_in:d35addf7 
 # UVM_INFO scoreboard.sv(82) @ 3030: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 3060: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:4030 Data_in_vld:0 Data_in:d35addf7 
+# UVM_INFO monitor.sv(53) @ 3060: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:4030 Data_in_vld:0 Data_in:d35addf7 
 # UVM_INFO scoreboard.sv(82) @ 3060: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
 # UVM_INFO cmd_n_sequence.sv(20) @ 3060: uvm_test_top.e.a.seqr@@cdn_seq [CMD_N_SEQ] rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 1bf7 | Data_in_vld = 1 | Data_in = b7fb6644
 # UVM_INFO driver.sv(46) @ 3060: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 1bf7 | Data_in_vld = 1 | Data_in = b7fb6644 DQ = z
-# UVM_INFO monitor.sv(48) @ 3090: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1bf7 Data_in_vld:1 Data_in:b7fb6644 
+# UVM_INFO monitor.sv(53) @ 3090: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1bf7 Data_in_vld:1 Data_in:b7fb6644 
 # UVM_INFO scoreboard.sv(82) @ 3090: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 3120: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1bf7 Data_in_vld:1 Data_in:b7fb6644 
+# UVM_INFO monitor.sv(53) @ 3120: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1bf7 Data_in_vld:1 Data_in:b7fb6644 
 # UVM_INFO scoreboard.sv(82) @ 3120: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 3150: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1bf7 Data_in_vld:1 Data_in:b7fb6644 
+# UVM_INFO monitor.sv(53) @ 3150: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:1bf7 Data_in_vld:1 Data_in:b7fb6644 
 # UVM_INFO scoreboard.sv(82) @ 3150: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
 # UVM_INFO cmd_n_sequence.sv(20) @ 3150: uvm_test_top.e.a.seqr@@cdn_seq [CMD_N_SEQ] rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 913c | Data_in_vld = 1 | Data_in = 7895d696
 # UVM_INFO driver.sv(46) @ 3150: uvm_test_top.e.a.d [DRV] DATA SENT FROM DRIVER CLASS : rst_n = 1 | cmd_n = 1 | RDnWR = 0 | Addr_in = 913c | Data_in_vld = 1 | Data_in = 7895d696 DQ = z
-# UVM_INFO monitor.sv(48) @ 3180: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:913c Data_in_vld:1 Data_in:7895d696 
+# UVM_INFO monitor.sv(53) @ 3180: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:913c Data_in_vld:1 Data_in:7895d696 
 # UVM_INFO scoreboard.sv(82) @ 3180: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 3210: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:913c Data_in_vld:1 Data_in:7895d696 
+# UVM_INFO monitor.sv(53) @ 3210: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:913c Data_in_vld:1 Data_in:7895d696 
 # UVM_INFO scoreboard.sv(82) @ 3210: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 3240: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:913c Data_in_vld:1 Data_in:7895d696 
+# UVM_INFO monitor.sv(53) @ 3240: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:913c Data_in_vld:1 Data_in:7895d696 
 # UVM_INFO scoreboard.sv(82) @ 3240: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
-# UVM_INFO monitor.sv(48) @ 3270: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:913c Data_in_vld:1 Data_in:7895d696 
+# UVM_INFO monitor.sv(53) @ 3270: uvm_test_top.e.a.m [MON] DATA SENT rst_n:1 cmd_n:1 RDnWR:0 Addr_in:913c Data_in_vld:1 Data_in:7895d696 
 # UVM_INFO scoreboard.sv(82) @ 3270: uvm_test_top.e.s [SBD] cmd_n is 1 or data_in is not vld, operation not performed
 # UVM_INFO verilog_src/uvm-1.1d/src/base/uvm_objection.svh(1267) @ 3270: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
 # 
@@ -336,9 +336,9 @@ Errors: 0, Warnings: 0
 # [wr_sequence]     5
 # ** Note: $finish    : C:/questasim64_2024.1/win64/../verilog_src/uvm-1.1d/src/base/uvm_root.svh(430)
 #    Time: 3270 ns  Iteration: 56  Instance: /tb_top
-# End time: 16:18:36 on Apr 07,2025, Elapsed time: 0:00:02
+# End time: 13:35:12 on Apr 09,2025, Elapsed time: 0:00:02
 # Errors: 0, Warnings: 0
-End time: 16:18:36 on Apr 07,2025, Elapsed time: 0:00:09
+End time: 13:35:12 on Apr 09,2025, Elapsed time: 0:00:05
 *** Summary *********************************************
     qrun: Errors:   0, Warnings:   0
     vlog: Errors:   0, Warnings:   0

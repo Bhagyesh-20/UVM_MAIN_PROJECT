@@ -6,12 +6,12 @@ class monitor extends uvm_monitor;
     transaction tc;
     uvm_event data_ready;
     virtual mem_ctrl_if mcif;
-
+    uvm_event e;
 
     function new(input string path = "monitor",uvm_component parent = null);
         super.new(path, parent);
-        send            = new("send",this);
-        data_ready      = new();
+        send = new("send",this);
+        e    = uvm_event_pool::get_global_pool().get("data_ready");
     endfunction
 
 
@@ -50,7 +50,7 @@ class monitor extends uvm_monitor;
 
                 if(mcif.command == 4'b0010 && mcif.RDnWR == 1'b1) begin
                     repeat(3) @(posedge mcif.clk);
-                  //data_ready.trigger();
+                    e.trigger();
                     `uvm_info("MON",$sformatf("Data ready tc.Data_out :%0h",tc.Data_out),UVM_NONE)
                 end
                 send.write(tc);

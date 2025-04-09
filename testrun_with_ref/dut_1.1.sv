@@ -21,7 +21,8 @@
         CMD_READ     = 3'b010, 
         CMD_WRITE    = 3'b011, 
         CMD_PRE      = 3'b100,
-        CMD_REFRESH  = 3'b101  
+        CMD_REFRESH  = 3'b101,
+        
     } cmd_t;
 
     typedef enum logic [3:0] {

@@ -29,7 +29,15 @@ module tb_top();
         .cs_n         (mcif.cs_n)
     );
 
+    integer addr;
+    reg [31:0] data;
+    bit [3:0] row;
+    bit [11:0] col;
+    
     initial begin
+          
+        
+        
             mcif.clk    = 0;
             mcif.rst_n  = 0;
         #0  mcif.clk    = 1;
@@ -41,6 +49,18 @@ module tb_top();
     initial begin
         uvm_config_db#(virtual mem_ctrl_if)::set(null,"uvm_test_top.e*","mcif",mcif);
         run_test("test");
+    end
+    final begin
+        $display("===== VALID MEMORY DUMP FROM DUT =====");
+        for (addr = 0; addr <= 65535; addr++) begin
+            data = dut.mem[addr];
+            if (data !== 'bx) begin
+                row = addr[15:12];
+                col = addr[11:0];
+                $display("addr = %04h  data = %08h",
+                         addr, data);
+            end
+        end
     end
     
 endmodule
