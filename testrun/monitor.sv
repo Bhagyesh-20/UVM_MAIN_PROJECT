@@ -50,6 +50,9 @@ class monitor extends uvm_monitor;
                 if(mcif.command == 4'b0010 && mcif.RDnWR == 1'b1) begin
                     repeat(3) @(posedge mcif.clk);
                 end
+                if( mcif.RDnWR == 1'b0) begin
+                    repeat(1) @(posedge mcif.clk);
+                end
                     `uvm_info("MON",$sformatf("DATA SENT rst_n:%0b cmd_n:%0b RDnWR:%0b Addr_in:%0h Data_in_vld:%0b Data_in:%0h ",tc.rst_n, tc.cmd_n, tc.RDnWR, tc.Addr_in, tc.Data_in_vld, tc.Data_in),UVM_NONE)
                     send.write(tc);
                 end
