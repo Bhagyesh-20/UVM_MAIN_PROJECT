@@ -151,11 +151,11 @@ end
                     if (!cmd_n) begin
                         if (RDnWR) begin  
                             if (active_row == next_active_row) begin
-                                next_tCK_counter = 4;
+                                next_tCK_counter = 3;
                                 next_state       = WRITE_TO_READ_DELAY;
                             end
                             else begin
-                                next_tCK_counter = 4;
+                                next_tCK_counter = 3;
                                 next_state       = RW_TO_PRE_DELAY;
                             end
                         end
@@ -189,11 +189,11 @@ end
                     if (row_active && (active_row == Addr_in[15:12])) begin
                         if (!cmd_n && !RDnWR) begin
                             next_state = READ_TO_WRITE_DELAY; 
-                            next_tCK_counter = 4;
+                            next_tCK_counter = 3;
                         end 
                         else if (!cmd_n && RDnWR) begin 
                             next_state = READ_TO_READ_DELAY;
-                            next_tCK_counter = 2;
+                            next_tCK_counter = 1;
                         end
                         else begin
                             next_state = IDLE;  
@@ -201,7 +201,7 @@ end
                     end 
                     else begin
                         next_state = RW_TO_PRE_DELAY;  
-                        next_tCK_counter = 4;
+                        next_tCK_counter = 3;
                     end
                 end
                 else begin
@@ -232,14 +232,14 @@ end
             end
 
             REFRESH : begin
-                data_out_vld            = 0;
+                data_out_vld        = 0;
                 command_buffer      = CMD_REFRESH;
                 if(is_row_valid(next_active_row))begin
                      for(int i= 0;i<4096;i++)begin
                          mem[{active_row, i[11:0]}] = mem_buffer[{active_row, i[11:0]}];
                      end
                     if (!cmd_n) begin
-                        next_tCK_counter = 5; 
+                        next_tCK_counter = 3; 
                         next_state = READ_TO_WRITE_DELAY;
                     end else begin
                         next_state = IDLE;
@@ -252,11 +252,9 @@ end
             
             READ_TO_WRITE_DELAY : begin
                 command_buffer  = CMD_REF_or_ACT_RnW;
-                // command_buffer  = CMD_RnW_WnR_PRE;
                 data_out_vld    = 0;
                 if(tCK_counter == 0)begin
-                    next_state          = WRITE;
-                    next_tCK_counter    = 4;
+                    next_state    = WRITE;
                 end
                 else begin
                     next_state = READ_TO_WRITE_DELAY;
@@ -270,11 +268,7 @@ end
                     {RA,CA}      = Addr_in;
                     data_out_vld = 1'b1;
                     next_state   = READ; 
-                
                 end
-                else if(tCK_counter == 1)begin
-                    data_out_vld = 1'b0;
-                end 
                 else begin
                     next_state = READ_TO_READ_DELAY;
                 end
@@ -282,7 +276,6 @@ end
             
             WRITE_TO_READ_DELAY : begin
                 command_buffer  = CMD_REF_or_ACT_RnW;
-                // command_buffer  = CMD_RnW_WnR_PRE;
                 data_out_vld    = 0;
                 if (tCK_counter == 0) begin
                     next_state = READ; 
@@ -303,7 +296,6 @@ end
             end
     
             ACT_TO_RW_DELAY : begin
-                // command_buffer  = CMD_RnW_WnR_PRE;
                 command_buffer  = CMD_REF_or_ACT_RnW;
                 data_out_vld    = 0;
                 if (tCK_counter == 0) begin
@@ -314,7 +306,6 @@ end
             end
     
             RW_TO_PRE_DELAY : begin
-                // command_buffer  = CMD_RnW_WnR_PRE;
                 command_buffer  = CMD_REF_or_ACT_RnW;
                 data_out_vld    = 0;
                 if(tCK_counter == 0) begin

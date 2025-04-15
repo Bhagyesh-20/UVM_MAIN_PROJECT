@@ -49,7 +49,13 @@ module tb_top();
     initial begin
         uvm_config_db#(virtual mem_ctrl_if)::set(null,"uvm_test_top.e*","mcif",mcif);
         run_test("test");
+    end 
+
+    always @(posedge mcif.clk) begin
+        $display($time, mcif.Data_out);
     end
+
+    
     final begin
         $display("===== VALID MEMORY DUMP FROM DUT =====");
         for (addr = 0; addr <= 65535; addr++) begin

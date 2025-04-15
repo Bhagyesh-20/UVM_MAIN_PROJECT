@@ -5,14 +5,14 @@ class driver extends uvm_driver #(transaction);
     `uvm_component_utils(driver)
 
     transaction tc;
-    uvm_blocking_put_port #(transaction) send_to_ref_drv;
+    uvm_analysis_port #(transaction) send;
     
     virtual mem_ctrl_if mcif;
 
     function new(input string path = "driver", uvm_component parent  = null);
     
         super.new(path,parent);
-        send_to_ref_drv = new("send_to_ref_drv", this);
+        send            = new("send",this);
     endfunction
     
     virtual function void build_phase(uvm_phase phase);
@@ -42,8 +42,7 @@ class driver extends uvm_driver #(transaction);
             mcif.Data_in        <= tc.Data_in;
             
             `uvm_info("DRV",$sformatf("DATA SENT FROM DRIVER CLASS : rst_n = %0b | cmd_n = %0b | RDnWR = %0b | Addr_in = %0h | Data_in_vld = %0b | Data_in = %0h DQ = %0h",tc.rst_n, tc.cmd_n, tc.RDnWR, tc.Addr_in, tc.Data_in_vld, tc.Data_in,mcif.DQ),UVM_NONE)
-            repeat(9) @(posedge mcif.clk); 
-            send_to_ref_drv.put(tc);
+            repeat(10) @(posedge mcif.clk);
             seq_item_port.item_done(tc);
             
         end

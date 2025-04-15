@@ -21,6 +21,8 @@ class wr_sequence extends uvm_sequence #(transaction);
                     tc.Data_in_vld  = 1'b1; 
                     `uvm_info("wr_sequence",$sformatf("rst_n = %0b | cmd_n = %0b | RDnWR = %0b | Addr_in = %0h | Data_in_vld = %0b | Data_in = %0h", tc.rst_n, tc.cmd_n, tc.RDnWR, tc.Addr_in, tc.Data_in_vld, tc.Data_in),UVM_NONE)   
                     addr_in_queue.push_back(tc.Addr_in);
+                    #220;
+                    tc.Data_in_vld  = 1'b1; 
                     finish_item(tc);
                 
                 end

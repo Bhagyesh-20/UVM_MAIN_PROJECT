@@ -21,10 +21,8 @@ class env extends uvm_env;
 
     virtual function void connect_phase(uvm_phase phase);
         super.connect_phase(phase);
-        // a.m.set_event(data_ready);  // Monitor gets the event
-        // s.set_event(data_ready); 
-        a.m.send.connect(s.recv_from_mon_to_sbd);
-        a.d.send_to_ref_drv.connect(rf_mdl.recv_from_drv_to_ref_mdl);  
-        rf_mdl.send_to_sbd.connect(s.recv_from_ref);
+        a.m.send.connect(s.recv_from_mon);
+        a.m.send.connect(rf_mdl.rcv_mon);  
+        rf_mdl.snd_sbd.connect(s.recv_from_ref);
     endfunction
 endclass

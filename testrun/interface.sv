@@ -15,8 +15,6 @@ interface mem_ctrl_if();
   logic        cs_n;  
   wire  [31:0] DQ;
 
-  assign DQ       = (!RDnWR && !cmd_n)?Data_in:'hz;
-  event read_event;
 
   modport DRV (input clk, rst_n, cmd_n, RDnWR, Addr_in, Data_in_vld, Data_in,
                output Data_out, data_out_vld, command, RA, CA, cs_n, 

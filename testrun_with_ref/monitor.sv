@@ -4,17 +4,13 @@ class monitor extends uvm_monitor;
     uvm_analysis_port #(transaction) send;
     bit [3:0] prev_command;
     transaction tc;
-    uvm_event data_ready;
+    
     virtual mem_ctrl_if mcif;
-    uvm_event e;
 
     function new(input string path = "monitor",uvm_component parent = null);
         super.new(path, parent);
         send = new("send",this);
-        e    = uvm_event_pool::get_global_pool().get("data_ready");
     endfunction
-
-
 
     virtual function void build_phase(uvm_phase phase);
         super.build_phase(phase);
@@ -25,7 +21,14 @@ class monitor extends uvm_monitor;
 
     virtual task run_phase(uvm_phase phase);
         forever begin
+            get_output_from_intf();
+            send.write(tc);
             repeat(2)@(posedge mcif.clk);
+        end
+    endtask
+
+    task get_output_from_intf();
+            repeat(10)@(posedge mcif.clk);
             if(!mcif.rst_n)begin
                 `uvm_info("MON", "SYSTEM RESET DETECTED mcif.rst_n", UVM_NONE); 
                 prev_command = 4'b0000; 
@@ -38,25 +41,16 @@ class monitor extends uvm_monitor;
                 tc.Addr_in      = mcif.Addr_in;
                 tc.Data_in_vld  = mcif.Data_in_vld;
                 tc.Data_in      = mcif.Data_in;
-                @(posedge mcif.clk);
                 tc.Data_out     = mcif.Data_out;
                 tc.data_out_vld = mcif.data_out_vld;
                 tc.command      = mcif.command;
                 tc.RA           = mcif.RA;
                 tc.CA           = mcif.CA;
                 tc.cs_n         = mcif.cs_n; 
-               
-                //`uvm_info("MON",$sformatf("DATA SENT rst_n:%0b cmd_n:%0b RDnWR:%0b Addr_in:%0h Data_in_vld:%0b Data_in:%0h tc.command:%0d tc.Data_out :%0h",tc.rst_n, tc.cmd_n, tc.RDnWR, tc.Addr_in, tc.Data_in_vld, tc.Data_in,tc.command,tc.Data_out),UVM_NONE)
-
-                if(mcif.command == 4'b0010 && mcif.RDnWR == 1'b1) begin
-                    repeat(3) @(posedge mcif.clk);
-                    e.trigger();
-                    `uvm_info("MON",$sformatf("Data ready tc.Data_out :%0h",tc.Data_out),UVM_NONE)
-                end
-                send.write(tc);
-                end
+                `uvm_info("MON",$sformatf("Data ready tc.Data_out :%0h",tc.Data_out),UVM_NONE)
             end
-
     endtask
 endclass
+
+
 

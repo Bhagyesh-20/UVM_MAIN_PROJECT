@@ -26,52 +26,52 @@ class test extends uvm_test;
         wr_seq              = wr_sequence::type_id::create("wr_seq",this);
         rd_seq              = rd_sequence::type_id::create("rd_seq",this);
         e                   = env::type_id::create("e",this);
-        uvm_top.print_topology();
-
     endfunction
 
 
     virtual task run_phase(uvm_phase phase);
         phase.raise_objection(this);
                 wr_seq.start(e.a.seqr);
+
+                    `uvm_info("TEST", "Waiting for sb_done and done_op", UVM_NONE)
+                    e.s.sb_done.wait_trigger();
                 
-                e.s.sb_done.wait_trigger();
+
+                wr_seq.start(e.a.seqr);
                 
-                 wr_seq.start(e.a.seqr);
-                
-                 e.s.sb_done.wait_trigger();
-                
-                 wr_seq.start(e.a.seqr);
-                
-                 e.s.sb_done.wait_trigger();
+                    e.s.sb_done.wait_trigger();
                 
                  wr_seq.start(e.a.seqr);
                 
-                 e.s.sb_done.wait_trigger();
+                    e.s.sb_done.wait_trigger();
+                
+                 wr_seq.start(e.a.seqr);
+                
+                    e.s.sb_done.wait_trigger();
                 
                 rd_seq.start(e.a.seqr);
                
-                e.s.sb_done.wait_trigger();
+                    e.s.sb_done.wait_trigger();
                 
+                rd_seq.start(e.a.seqr);
+
+                    e.s.sb_done.wait_trigger();
+                
+                rd_seq.start(e.a.seqr);
+
+                    e.s.sb_done.wait_trigger();
+                
+                rd_seq.start(e.a.seqr);
+                
+                    e.s.sb_done.wait_trigger();
+                
+                 rd_seq.start(e.a.seqr);
+                
+                    e.s.sb_done.wait_trigger();
+
                  rd_seq.start(e.a.seqr);
 
-                 e.s.sb_done.wait_trigger();
-                
-                 rd_seq.start(e.a.seqr);
-
-                 e.s.sb_done.wait_trigger();
-                
-                 rd_seq.start(e.a.seqr);
-                
-                 e.s.sb_done.wait_trigger();
-                
-                 rd_seq.start(e.a.seqr);
-                
-                 e.s.sb_done.wait_trigger();
-                
-                 rd_seq.start(e.a.seqr);
-
-                 e.s.sb_done.wait_trigger();
+                    e.s.sb_done.wait_trigger();
                 
                 //  wr_invld_seq.start(e.a.seqr);
 

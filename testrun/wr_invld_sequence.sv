@@ -9,7 +9,6 @@ class wr_invld_sequence extends uvm_sequence #(transaction);
 
     virtual task body();
         tc = transaction::type_id::create("tc");
-        repeat(5) begin
             start_item(tc);
                 if(!tc.randomize())begin
                     `uvm_error("WR_INVLD_SEQ","Randomization failed")
@@ -22,6 +21,5 @@ class wr_invld_sequence extends uvm_sequence #(transaction);
                 tc.Data_in_vld  = 1'b0;
             finish_item(tc);
             end
-        end
     endtask
 endclass

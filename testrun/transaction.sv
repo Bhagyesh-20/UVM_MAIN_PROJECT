@@ -1,8 +1,8 @@
 class transaction extends uvm_sequence_item;
 
     //inputs
-    bit                 rst_n;
-    bit                 cmd_n;
+    bit            rst_n;
+    bit            cmd_n;
     bit                 RDnWR;
     rand bit [15:0]     Addr_in;
     rand bit            Data_in_vld;

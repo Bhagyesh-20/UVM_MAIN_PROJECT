@@ -7,7 +7,10 @@ import mem_ctrl_pkg::*;
 `include "dut_1.1.sv"
 `include "interface.sv"
 
-
+integer addr;
+    reg [31:0] data;
+    bit [3:0] row;
+    bit [11:0] col;
 
 module tb_top();
     mem_ctrl_if mcif();
@@ -38,9 +41,9 @@ module tb_top();
     
     always #5 mcif.clk = ~mcif.clk;
     
-    always@(posedge mcif.clk)begin
-        $display($time," Command is ",mcif.command);
-    end
+    //   always@(posedge mcif.clk)begin
+    //       $display($time," Command is ",mcif.command);
+    //   end
 
 
     initial begin
@@ -48,4 +51,16 @@ module tb_top();
         run_test("test");
     end
     
+    // final begin
+    //     $display("===== VALID MEMORY DUMP FROM DUT =====");
+    //     for (addr = 0; addr <= 65535; addr++) begin
+    //         data = dut.mem[addr];
+    //         if (data !== 'bx) begin
+    //             row = addr[15:12];
+    //             col = addr[11:0];
+    //             $display("addr = %04h  data = %08h",
+    //                      addr, data);
+    //         end
+    //     end
+    // end
 endmodule

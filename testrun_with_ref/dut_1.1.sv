@@ -16,18 +16,20 @@ module mem_ctrl(
 );
 
 typedef enum logic [2:0] {
-    CMD_NOP      = 3'b000,
-    CMD_ACT      = 3'b001, 
-    CMD_READ     = 3'b010, 
-    CMD_WRITE    = 3'b011, 
-    CMD_PRE      = 3'b100,
-    CMD_REFRESH  = 3'b101  
+    CMD_NOP             = 3'b000,
+    CMD_ACT             = 3'b001, 
+    CMD_READ            = 3'b010, 
+    CMD_WRITE           = 3'b011, 
+    CMD_PRE             = 3'b100,
+    CMD_REFRESH         = 3'b101,
+    CMD_R_R             = 3'b110,
+    CMD_REF_or_ACT_RnW  = 3'b111
 } cmd_t;
 
 typedef enum logic [3:0] {
     IDLE, ACT, READ, WRITE, PRE, REFRESH, READ_TO_READ_DELAY, READ_TO_WRITE_DELAY,
     WRITE_TO_READ_DELAY, REFRESH_TO_RW_DELAY,ACT_TO_RW_DELAY,
-    READ_TO_PRE_DELAY, WRITE_TO_PRE_DELAY
+    RW_TO_PRE_DELAY
 } state_t;
 
 state_t state, next_state;
@@ -56,6 +58,8 @@ logic [2:0]     command_buffer;
 
 reg [31:0]      mem [0:65535];
 reg [31:0]      mem_buffer[0:65535];
+
+logic           next_data_out_vld;
 
 assign cs_n     =   !(is_col_valid(active_col)&&is_row_valid(active_row));
 assign DQ       =   (state == WRITE) ? Data_in : 32'bz;
@@ -128,7 +132,7 @@ end
                         next_row_active = 1;
                         if(is_col_valid(next_active_col))begin
                             next_state = ACT_TO_RW_DELAY;
-                            next_tCK_counter = 5;
+                            next_tCK_counter = 4;
                         end
                         else begin
                             next_state = ACT;
@@ -149,12 +153,12 @@ end
                     if (!cmd_n) begin
                         if (RDnWR) begin  
                             if (active_row == next_active_row) begin
-                                next_tCK_counter = 4;
+                                next_tCK_counter = 3;
                                 next_state       = WRITE_TO_READ_DELAY;
                             end
                             else begin
-                                next_tCK_counter = 4;
-                                next_state       = WRITE_TO_PRE_DELAY;
+                                next_tCK_counter = 3;
+                                next_state       = RW_TO_PRE_DELAY;
                             end
                         end
                         else begin
@@ -187,19 +191,19 @@ end
                     if (row_active && (active_row == Addr_in[15:12])) begin
                         if (!cmd_n && !RDnWR) begin
                             next_state = READ_TO_WRITE_DELAY; 
-                            next_tCK_counter = 4;
+                            next_tCK_counter = 3;
                         end 
                         else if (!cmd_n && RDnWR) begin 
                             next_state = READ_TO_READ_DELAY;
-                            next_tCK_counter = 2;
+                            next_tCK_counter = 1;
                         end
                         else begin
                             next_state = IDLE;  
                         end
                     end 
                     else begin
-                        next_state = READ_TO_PRE_DELAY;  
-                        next_tCK_counter = 4;
+                        next_state = RW_TO_PRE_DELAY;  
+                        next_tCK_counter = 3;
                     end
                 end
                 else begin
@@ -230,29 +234,29 @@ end
             end
 
             REFRESH : begin
-                data_out_vld            = 0;
+                data_out_vld        = 0;
+                command_buffer      = CMD_REFRESH;
                 if(is_row_valid(next_active_row))begin
-                    command_buffer      = CMD_REFRESH;
                      for(int i= 0;i<4096;i++)begin
                          mem[{active_row, i[11:0]}] = mem_buffer[{active_row, i[11:0]}];
                      end
                     if (!cmd_n) begin
-                        next_tCK_counter = 5; 
+                        next_tCK_counter = 3; 
                         next_state = READ_TO_WRITE_DELAY;
                     end else begin
                         next_state = IDLE;
                     end
                 end
                 else begin
-                    next_state = REFRESH;
+                    next_state = IDLE;
                 end        
             end
             
             READ_TO_WRITE_DELAY : begin
+                command_buffer  = CMD_REF_or_ACT_RnW;
                 data_out_vld    = 0;
                 if(tCK_counter == 0)begin
-                    next_state          = WRITE;
-                    next_tCK_counter    = 4;
+                    next_state    = WRITE;
                 end
                 else begin
                     next_state = READ_TO_WRITE_DELAY;
@@ -260,22 +264,20 @@ end
             end
     
             READ_TO_READ_DELAY : begin
+                command_buffer  = CMD_R_R;
 
                 if (tCK_counter == 0) begin
                     {RA,CA}      = Addr_in;
                     data_out_vld = 1'b1;
                     next_state   = READ; 
-                
                 end
-                else if(tCK_counter == 1)begin
-                    data_out_vld = 1'b0;
-                end 
                 else begin
                     next_state = READ_TO_READ_DELAY;
                 end
             end
             
             WRITE_TO_READ_DELAY : begin
+                command_buffer  = CMD_REF_or_ACT_RnW;
                 data_out_vld    = 0;
                 if (tCK_counter == 0) begin
                     next_state = READ; 
@@ -286,6 +288,7 @@ end
             end
     
             REFRESH_TO_RW_DELAY : begin
+                command_buffer  = CMD_REF_or_ACT_RnW;
                 data_out_vld    = 0;
                 if (tCK_counter == 0) begin
                     next_state = RDnWR?READ:WRITE; 
@@ -295,6 +298,7 @@ end
             end
     
             ACT_TO_RW_DELAY : begin
+                command_buffer  = CMD_REF_or_ACT_RnW;
                 data_out_vld    = 0;
                 if (tCK_counter == 0) begin
                     next_state = (RDnWR) ? READ : WRITE; 
@@ -303,23 +307,14 @@ end
                 end
             end
     
-            WRITE_TO_PRE_DELAY : begin
-                data_out_vld    =   0;
+            RW_TO_PRE_DELAY : begin
+                command_buffer  = CMD_REF_or_ACT_RnW;
+                data_out_vld    = 0;
                 if(tCK_counter == 0) begin
                     next_state = PRE;
                 end
                 else begin
-                    next_state = WRITE_TO_PRE_DELAY;
-                end
-            end
-    
-            READ_TO_PRE_DELAY : begin
-                data_out_vld    =   0;
-                if(tCK_counter == 0) begin
-                    next_state = PRE;
-                end
-                else begin
-                    next_state = READ_TO_PRE_DELAY;
+                    next_state = RW_TO_PRE_DELAY;
                 end
             end            
         endcase
